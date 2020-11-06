@@ -20,14 +20,14 @@
               <i class="fa fa-search"></i>
             </span>
           </div>
-          <input type="text" class="form-control border-left-0" id="keyword" placeholder="Search for anything">
+          <input type="text" class="form-control border-left-0" name="keyword" id="keyword" placeholder="Search for anything">
         </div>
       </div>
     </div>
     <div class="col-md-3 pr-0">
       <div class="form-group">
         <label for="cat" class="sr-only">Search within:</label>
-        <select class="form-control" id="cat">
+        <select class="form-control" id="cat" name="cat" >
           <option selected value="all">All categories</option>
           <option value="fill">Fill me in</option>
           <option value="with">with options</option>
@@ -38,7 +38,7 @@
     <div class="col-md-3 pr-0">
       <div class="form-inline">
         <label class="mx-2" for="order_by">Sort by:</label>
-        <select class="form-control" id="order_by">
+        <select class="form-control" id="order_by" name="order_by">
           <option selected value="pricelow">Price (low to high)</option>
           <option value="pricehigh">Price (high to low)</option>
           <option value="date">Soonest expiry</option>
@@ -57,48 +57,88 @@
 
 <?php
   // Retrieve these from the URL
-  if (!isset($_GET['keyword'])) {
-    // TODO: Define behavior if a keyword has not been specified.
-  }
-  else {
-    $keyword = $_GET['keyword'];
+  if (!isset($_GET['keyword']))
+  {
+	   $query = "SELECT * FROM listings WHERE item_title IS NOT NULL";
   }
 
-  if (!isset($_GET['cat'])) {
-    // TODO: Define behavior if a category has not been specified.
+  else
+  {
+    $keyword = $_GET['keyword'];
+
+  	if ($keyword == '')
+    {
+  	   $query = "SELECT * FROM listings WHERE item_title IS NOT NULL";
+  	}
+  	else
+    {
+  	   $query = "SELECT * FROM listings WHERE item_title = '$keyword'";
+  	}
   }
-  else {
-    $category = $_GET['cat'];
+
+  if (!isset($_GET['cat']))
+  {
+	   $query .= " AND category IS NOT NULL";
   }
-  
-  if (!isset($_GET['order_by'])) {
-    // TODO: Define behavior if an order_by value has not been specified.
+
+  else
+  {
+	$category = $_GET['cat'];
+	if ($category = "all")
+	{
+	   $query .= " AND category IS NOT NULL";
+	}
+	else
+	{
+	   $query .= " AND category = '$category'";
+	}
+	// We will have to make this mandatory and add a field so that if it is = to all it is as if it is blank.
   }
-  else {
-    $ordering = $_GET['order_by'];
+
+  if (!isset($_GET['order_by']))
+  {
+  // TODO: Define behavior if an order_by value has not been specified.
+	  $query .= " ORDER BY endtime";
   }
-  
-  if (!isset($_GET['page'])) {
+  else
+  {
+    $query .= " ORDER BY startprice";
+  }
+
+  if (!isset($_GET['page']))
+  {
     $curr_page = 1;
   }
-  else {
+  else
+  {
     $curr_page = $_GET['page'];
   }
 
-  /* TODO: Use above values to construct a query. Use this query to 
-     retrieve data from the database. (If there is no form data entered,
-     decide on appropriate default value/default query to make. */
-  
-  /* For the purposes of pagination, it would also be helpful to know the
-     total number of results that satisfy the above query */
-  $num_results = 96; // TODO: Calculate me for real
-  $results_per_page = 10;
-  $max_page = ceil($num_results / $results_per_page);
+	include 'opendb.php';
+	$result = mysqli_query($connection, $query)
+			or die('Error making select users query');
+	  /* TODO: Use above values to construct a query. Use this query to
+		 retrieve data from the database. (If there is no form data entered,
+		 decide on appropriate default value/default query to make. */
+
+	$tmp = explode(" ",$query);
+	$tmp[1] = "COUNT(*)";
+	$num_query = implode(" ",$tmp);
+
+	$num_result = mysqli_query($connection, $num_query)
+			or die('Error making count query');
+
+	$row = mysqli_fetch_array($num_result);
+
+	$num_results = $row[0]; // TODO: Calculate me for real
+	$results_per_page = 10;
+	$max_page = ceil($num_results / $results_per_page);
 ?>
 
 <div class="container mt-5">
 
 <!-- TODO: If result set is empty, print an informative message. Otherwise... -->
+
 
 <ul class="list-group">
 
@@ -106,24 +146,37 @@
      retrieved from the query -->
 
 <?php
+	
+	while ($row = mysqli_fetch_array($result))
+	{
+		//Will need to have something for if there haven't been any bids 
+		
+		$top_bid_query = "SELECT MAX(bidprice) FROM bids WHERE listing_id = {$row['listing_id']}";
+		$count_bid_query = "SELECT COUNT(*) FROM bids WHERE listing_id = {$row['listing_id']}";
+		
+		$top_bid_result = mysqli_query($connection, $top_bid_query)
+			or die('Error making top bid query');
+			
+		$count_bid_result = mysqli_query($connection, $count_bid_query)
+			or die('Error making top bid query');
+		
+		$top_bid = mysqli_fetch_array($top_bid_result);
+		$bid_count = mysqli_fetch_array($count_bid_result);
+		
+		print_listing_li($row['listing_id'], $row['item_title'], $row['itemdescription'], $top_bid[0], $bid_count[0], date_create($row['endtime']));
+		
+	}
+
   // Demonstration of what listings will look like using dummy data.
-  $item_id = "87021";
-  $title = "Dummy title";
-  $description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum eget rutrum ipsum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Phasellus feugiat, ipsum vel egestas elementum, sem mi vestibulum eros, et facilisis dui nisi eget metus. In non elit felis. Ut lacus sem, pulvinar ultricies pretium sed, viverra ac sapien. Vivamus condimentum aliquam rutrum. Phasellus iaculis faucibus pellentesque. Sed sem urna, maximus vitae cursus id, malesuada nec lectus. Vestibulum scelerisque vulputate elit ut laoreet. Praesent vitae orci sed metus varius posuere sagittis non mi.";
-  $current_price = 30;
-  $num_bids = 1;
-  $end_date = new DateTime('2020-09-16T11:00:00');
-  
   // This uses a function defined in utilities.php
-  print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
   
   $item_id = "516";
   $title = "Different title";
   $description = "Very short description.";
   $current_price = 13.50;
   $num_bids = 3;
-  $end_date = new DateTime('2020-11-02T00:00:00');
-  
+  $end_date = new DateTime('2020-10-04T00:00:00');
+
   print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
 ?>
 
@@ -132,7 +185,7 @@
 <!-- Pagination for results listings -->
 <nav aria-label="Search results pages" class="mt-5">
   <ul class="pagination justify-content-center">
-  
+
 <?php
 
   // Copy any currently-set GET variables to the URL.
@@ -142,12 +195,12 @@
       $querystring .= "$key=$value&amp;";
     }
   }
-  
+
   $high_page_boost = max(3 - $curr_page, 0);
   $low_page_boost = max(2 - ($max_page - $curr_page), 0);
   $low_page = max(1, $curr_page - 2 - $low_page_boost);
   $high_page = min($max_page, $curr_page + 2 + $high_page_boost);
-  
+
   if ($curr_page != 1) {
     echo('
     <li class="page-item">
@@ -157,7 +210,7 @@
       </a>
     </li>');
   }
-    
+
   for ($i = $low_page; $i <= $high_page; $i++) {
     if ($i == $curr_page) {
       // Highlight the link
@@ -169,13 +222,13 @@
       echo('
     <li class="page-item">');
     }
-    
+
     // Do this in any case
     echo('
       <a class="page-link" href="browse.php?' . $querystring . 'page=' . $i . '">' . $i . '</a>
     </li>');
   }
-  
+
   if ($curr_page != $max_page) {
     echo('
     <li class="page-item">
