@@ -17,12 +17,13 @@ $Password = $_POST['password'];
 
 
 
-$query = "INSERT INTO users (email, password) VALUES ('$email', '$Password')";
+$query = "INSERT INTO users (email, password) VALUES ('$email', '$Password');";
 	   
 $result = mysqli_query($connect,$query)
-	or die("Error making saveToDatabase query’");
+	or die("Error making saveToDatabase query");
 	
 mysqli_close($connect)
+	
+?> 
 
 
-?>
