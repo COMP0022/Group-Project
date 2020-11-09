@@ -56,57 +56,57 @@
 </div>
 
 <?php
-  // Retrieve these from the URL
-  $results_per_page = 5;
-  if (!isset($_GET['keyword']))
-  {
-	   $query = "SELECT * FROM listings WHERE item_title IS NOT NULL";
-  }
-
-  else
-  {
-    $keyword = $_GET['keyword'];
-
-  	if ($keyword == '')
-    {
-  	   $query = "SELECT * FROM listings WHERE item_title IS NOT NULL";
-  	}
-  	else
-    {
-  	   $query = "SELECT * FROM listings WHERE item_title LIKE '%$keyword%'";
-  	}
-  }
-
-  if (!isset($_GET['cat']))
-  {
-	   $query .= " AND category IS NOT NULL";
-  }
-
-  else
-  {
-	$category = $_GET['cat'];
-	if ($category = "all")
+	// Retrieve these from the URL
+	$results_per_page = 5;
+	if (!isset($_GET['keyword']))
 	{
-	   $query .= " AND category IS NOT NULL";
+		 $query = "SELECT * FROM listings WHERE item_title IS NOT NULL";
 	}
+
 	else
 	{
-	   $query .= " AND category = '$category'";
+		$keyword = $_GET['keyword'];
+
+		if ($keyword == '')
+		{
+			 $query = "SELECT * FROM listings WHERE item_title IS NOT NULL";
+		}
+		else
+		{
+			 $query = "SELECT * FROM listings WHERE item_title LIKE '%$keyword%'";
+		}
 	}
+
+	if (!isset($_GET['cat']))
+	{
+		 $query .= " AND category IS NOT NULL";
+	}
+	
+	else
+	{
+		$category = $_GET['cat'];
+		if ($category = "all")
+		{
+			 $query .= " AND category IS NOT NULL";
+		}
+		else
+		{
+			 $query .= " AND category = '$category'";
+		}
 	// We will have to make this mandatory and add a field so that if it is = to all it is as if it is blank.
-  }
+	}
 
-  if (!isset($_GET['order_by']))
-  {
-  // TODO: Define behavior if an order_by value has not been specified.
-	  $query .= " ORDER BY endtime LIMIT $results_per_page";
-  }
+	if (!isset($_GET['order_by']))
+	{
+	// TODO: Define behavior if an order_by value has not been specified.
+		$query .= " ORDER BY endtime LIMIT $results_per_page";
+	}
 	else
-  {
-    $query .= " ORDER BY startprice LIMIT $results_per_page";
-  }
+	{
+		$query .= " ORDER BY startprice LIMIT $results_per_page";
+	}
 
-	echo $query;
+	
 	include 'opendb.php';
 
 	$tmp = explode(" ",$query);
@@ -122,9 +122,9 @@
 	echo $num_results;
 	$max_page = ceil($num_results / $results_per_page);
 	if (!isset($_GET['page']))
-	  {
+		{
 		$curr_page = 1;
-	  }
+		}
 	else
 	{
 		if ($_GET['page'] == 1) 
