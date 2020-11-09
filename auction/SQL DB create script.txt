@@ -6,11 +6,13 @@ password TEXT,
 PRIMARY KEY(id));
 
 CREATE TABLE sellers (user_id INT, 
-seller_id INT, 
+seller_id INT NOT NULL AUTO_INCREMENT, 
+PRIMARY KEY(seller_id),
 FOREIGN KEY(user_id) REFERENCES users(id));
 
 CREATE TABLE buyers (user_id INT, 
-buyer_id INT, 
+PRIMARY KEY(buyer_id),
+buyer_id INT NOT NULL AUTO_INCREMENT, 
 FOREIGN KEY(user_id) REFERENCES users(id));
 
 CREATE TABLE listings (listing_id INT NOT NULL AUTO_INCREMENT, 
