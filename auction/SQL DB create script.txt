@@ -27,7 +27,7 @@ startprice DECIMAL(10,2),
 PRIMARY KEY(listing_id), 
 FOREIGN KEY(seller_id) REFERENCES sellers(seller_id));
 
-CREATE TABLE bids (bid_id INT, 
+CREATE TABLE bids (bid_id INT NOT NULL AUTO_INCREMENT, 
 buyer_id INT, 
 listing_id INT,
 bidtime DATETIME,   
