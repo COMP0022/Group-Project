@@ -57,6 +57,7 @@
 
 <?php
   // Retrieve these from the URL
+  $results_per_page = 5;
   if (!isset($_GET['keyword']))
   {
 	   $query = "SELECT * FROM listings WHERE item_title IS NOT NULL";
@@ -72,7 +73,7 @@
   	}
   	else
     {
-  	   $query = "SELECT * FROM listings WHERE item_title = '$keyword'";
+  	   $query = "SELECT * FROM listings WHERE item_title LIKE '%$keyword%'";
   	}
   }
 
@@ -98,28 +99,15 @@
   if (!isset($_GET['order_by']))
   {
   // TODO: Define behavior if an order_by value has not been specified.
-	  $query .= " ORDER BY endtime";
+	  $query .= " ORDER BY endtime LIMIT $results_per_page";
   }
-  else
+	else
   {
-    $query .= " ORDER BY startprice";
+    $query .= " ORDER BY startprice LIMIT $results_per_page";
   }
 
-  if (!isset($_GET['page']))
-  {
-    $curr_page = 1;
-  }
-  else
-  {
-    $curr_page = $_GET['page'];
-  }
-
+	echo $query;
 	include 'opendb.php';
-	$result = mysqli_query($connection, $query)
-			or die('Error making select users query');
-	  /* TODO: Use above values to construct a query. Use this query to
-		 retrieve data from the database. (If there is no form data entered,
-		 decide on appropriate default value/default query to make. */
 
 	$tmp = explode(" ",$query);
 	$tmp[1] = "COUNT(*)";
@@ -130,9 +118,26 @@
 
 	$row = mysqli_fetch_array($num_result);
 
-	$num_results = $row[0]; // TODO: Calculate me for real
-	$results_per_page = 10;
+	$num_results = $row[0]; 
+	echo $num_results;
 	$max_page = ceil($num_results / $results_per_page);
+	if (!isset($_GET['page']))
+	  {
+		$curr_page = 1;
+	  }
+	else
+	{
+		if ($_GET['page'] == 1) 
+		{
+			$curr_page = 1;
+		}
+		else
+		{
+			$curr_page = $_GET['page'];
+			$offset = ($curr_page*$results_per_page)-$results_per_page;
+			$query .= " OFFSET $offset"; 
+		}
+	}
 ?>
 
 <div class="container mt-5">
@@ -146,38 +151,39 @@
      retrieved from the query -->
 
 <?php
+
+	$result = mysqli_query($connection, $query)
+		or die('Error making select users query');
 	
 	while ($row = mysqli_fetch_array($result))
 	{
 		//Will need to have something for if there haven't been any bids 
 		
-		$top_bid_query = "SELECT MAX(bidprice) FROM bids WHERE listing_id = {$row['listing_id']}";
+		
 		$count_bid_query = "SELECT COUNT(*) FROM bids WHERE listing_id = {$row['listing_id']}";
 		
-		$top_bid_result = mysqli_query($connection, $top_bid_query)
-			or die('Error making top bid query');
-			
 		$count_bid_result = mysqli_query($connection, $count_bid_query)
 			or die('Error making top bid query');
 		
-		$top_bid = mysqli_fetch_array($top_bid_result);
 		$bid_count = mysqli_fetch_array($count_bid_result);
 		
-		print_listing_li($row['listing_id'], $row['item_title'], $row['itemdescription'], $top_bid[0], $bid_count[0], date_create($row['endtime']));
+		if ($bid_count[0] == 0) {
+			print_listing_li($row['listing_id'], $row['item_title'], $row['itemdescription'], $row['startprice'], $bid_count[0], date_create($row['endtime']));
+		}
+		else {
+			$top_bid_query = "SELECT MAX(bidprice) FROM bids WHERE listing_id = {$row['listing_id']}";
+			
+			$top_bid_result = mysqli_query($connection, $top_bid_query)
+				or die('Error making top bid query');	
+			
+			$top_bid = mysqli_fetch_array($top_bid_result);
+			
+			print_listing_li($row['listing_id'], $row['item_title'], $row['itemdescription'], $top_bid[0], $bid_count[0], date_create($row['endtime']));
 		
+		}
+	
 	}
 
-  // Demonstration of what listings will look like using dummy data.
-  // This uses a function defined in utilities.php
-  
-  $item_id = "516";
-  $title = "Different title";
-  $description = "Very short description.";
-  $current_price = 13.50;
-  $num_bids = 3;
-  $end_date = new DateTime('2020-10-04T00:00:00');
-
-  print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
 ?>
 
 </ul>
