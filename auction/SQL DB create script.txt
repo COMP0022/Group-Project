@@ -17,7 +17,7 @@ FOREIGN KEY(user_id) REFERENCES users(id));
 
 CREATE TABLE listings (listing_id INT NOT NULL AUTO_INCREMENT, 
 seller_id INT, 
-posttime timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+posttime DATETIME, 
 endtime DATETIME, 
 itemdescription TEXT,
 item_title TEXT,  
