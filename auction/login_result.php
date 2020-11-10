@@ -8,26 +8,22 @@
 session_start();
 
 $input_email = $_POST['email'];
-$input_password = $_POST['password'];
+$input_password = $_POST['password']; // Retreive the form input from header.php
 
 
-$connection =
-mysqli_connect('localhost','root','Ll1029453257','testdb')
-or die('Error connecting to MySQL server.'.mysql_error());
-if ($connection){echo "DB connected</div>";}
-$query = "SELECT * FROM users WHERE email='$input_email' AND passwd='$input_password'";
+include 'opendb.php'; // Make connection to the database 'testdb'
+$query = "SELECT * FROM users WHERE email='$input_email' AND password='$input_password'";
 $result = mysqli_query($connection,$query);
-$row = mysqli_fetch_array($result);
+$row = mysqli_fetch_array($result); // Make query to the database and fetch user information
 
-if (!$result){ echo('<div class="text-center">Login Failed. Email does not exist or Password Incorrect.</div>'); }
+if (!$row){ echo('<div class="text-center">Login Failed. Email does not exist or Password Incorrect.</div>'); } // Login Failed
 
-else {
+else {  
 $_SESSION['logged_in'] = true;
-$_SESSION['username'] = $input_email;
+$_SESSION['username'] = $row['id'];
 if ($row['account_type']==0) {$_SESSION['account_type'] = 'buyer';}
-if ($row['account_type']==1) {$_SESSION['account_type'] = 'seller';}
-echo $_SESSION['account_type'];
-echo('<div class="text-center">You are now logged in! You will be redirected shortly.</div>');
+if ($row['account_type']==1) {$_SESSION['account_type'] = 'seller';}         // Set session name and account type.
+echo('<div class="text-center">You are now logged in as: '. $_SESSION['account_type'] . ', You will be redirected shortly.</div>');
 // Redirect to index after 5 seconds
 header("refresh:5;url=index.php");
 }
