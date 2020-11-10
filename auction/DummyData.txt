@@ -50,3 +50,26 @@ VALUES
 ('1' , '16' , CURRENT_TIMESTAMP() , '875' , NULL),
 ('1' , '10' , CURRENT_TIMESTAMP() , '17' , NULL),
 ('2' , '5' , CURRENT_TIMESTAMP() , '300' , NULL);
+
+INSERT INTO categories 
+VALUES ('CAT001', 'Home & Garden'),
+('CAT002', 'Clothes, Footwear & Accessories'),
+('CAT003', 'Baby & Kids Stuff'),
+('CAT004', 'Sports, Leisure & Travel'),
+('CAT005', 'Office Furniture & Equipment'),
+('CAT006', 'Other Goods'),
+('CAT007', 'Cameras, Camcorders & Studio Equipment'),
+('CAT008', 'Appliances'),
+('CAT009', 'Phones, Mobile Phones & Telecoms'),
+('CAT010', 'Computers & Software'),
+('CAT011', 'Music, Films, Books & Games'),
+('CAT012', 'Health & Beauty'),
+('CAT013', 'Musical Instruments & DJ Equipment'),
+('CAT014', 'DIY Tools & Materials'),
+('CAT015', 'Audio & Stereo'),
+('CAT016', 'TV, DVD, Blu-Ray & Videos'),
+('CAT017', 'Video Games & Consoles'),
+('CAT018', 'Christmas Decorations'),
+('CAT019', 'Tickets');
+
+
