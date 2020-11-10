@@ -10,7 +10,7 @@ $connect=mysqli_connect($servername, $username, $password, $database_name);
 	
 //checking connection and printing whether or not it connected	
 if($connect){
-	echo "connection success.";
+	echo "connection success";
 }
 else{
 	echo "Connection failed";
@@ -44,14 +44,11 @@ slightly confusing given the autoincrementation of both buyer_id and seller_id *
 
 if ($result and $Password == $repeat_password)
 {
-	echo " Registered successfully. Registered with email: $email";
+	echo "registered successfully";
 }
 else{
-	echo " Passwords do not match";
+	echo "Passwords do not match";
 }
 mysqli_close($connect);
 	
 ?> 
-
-
-
