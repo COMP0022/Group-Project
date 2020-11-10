@@ -20,14 +20,16 @@ else{
 $email = $_POST['email'];
 $Password = $_POST['password'];
 $repeat_password = $_POST['passwordrepeat'];
-$buyer = $_POST['buyer'];
-$seller = $_POST['seller'];
+
+
+
 
 
 //Creating insert code to insert registration into user table of testdb database
 
 $query = "INSERT INTO users (email, password) VALUES ('$email', '$Password')";
-
+$buyerquery = "INSERT INTO buyers (user_id) SELECT (id) FROM users";
+$sellerquery = "INSERT INTO sellers (user_id) SELECT (id) FROM users";
 /*only inserting data if the password and password repeat match. 
 noting to user that information did not insert */
 
@@ -36,8 +38,16 @@ $result = mysqli_query($connect,$query)
 	or die(" insert into database unsuccessfull");
 }
 
-/* writing an if statement below to register user as buyer or seller and not both.  
-slightly confusing given the autoincrementation of both buyer_id and seller_id */
+//if user registers as buyer then insert id into buyers table...auto incrementing buyer id
+if ($_POST['accountType'] == "buyer"){
+$buyerresult = mysqli_query($connect, $buyerquery);
+}
+
+//if user registers as seller then insert id into sellers table..auto incrementing seller id
+if ($_POST['accountType'] == "seller"){
+$sellerresult = mysqli_query($connect, $sellerquery);
+}
+
 
 
 // telling user if their passwords do not match
