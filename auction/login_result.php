@@ -10,9 +10,8 @@ session_start();
 $input_email = $_POST['email'];
 $input_password = $_POST['password']; // Retreive the form input from header.php
 
-
-include 'opendb.php'; // Make connection to the database 'testdb'
-$query = "SELECT * FROM users WHERE email='$input_email' AND password='$input_password'";
+include_once 'opendb.php'; // Make connection to the database 'testdb'
+$query = "SELECT * FROM users WHERE email='$input_email' AND password='$input_password';";
 $result = mysqli_query($connection,$query);
 $row = mysqli_fetch_array($result); // Make query to the database and fetch user information
 
@@ -20,7 +19,7 @@ if (!$row){ echo('<div class="text-center">Login Failed. Email does not exist or
 
 else {  
 $_SESSION['logged_in'] = true;
-$_SESSION['username'] = $row['id'];
+$_SESSION['username'] = $row['user_id'];
 if ($row['account_type']==0) {$_SESSION['account_type'] = 'buyer';}
 if ($row['account_type']==1) {$_SESSION['account_type'] = 'seller';}         // Set session name and account type.
 echo('<div class="text-center">You are now logged in as: '. $_SESSION['account_type'] . ', You will be redirected shortly.</div>');

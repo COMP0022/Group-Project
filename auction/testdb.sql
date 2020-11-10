@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 10, 2020 at 11:19 AM
+-- Generation Time: Nov 10, 2020 at 03:41 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.3.21
 
@@ -32,13 +32,13 @@ CREATE TABLE IF NOT EXISTS `bids` (
   `bid_id` int(11) NOT NULL AUTO_INCREMENT,
   `buyer_id` int(11) DEFAULT NULL,
   `listing_id` int(11) DEFAULT NULL,
-  `bidtime` datetime DEFAULT NULL,
+  `bidtime` datetime DEFAULT CURRENT_TIMESTAMP,
   `bidprice` decimal(10,2) DEFAULT NULL,
   `outcome` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`bid_id`),
   KEY `listing_id` (`listing_id`),
   KEY `buyer_id` (`buyer_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `bids`
@@ -64,7 +64,8 @@ INSERT INTO `bids` (`bid_id`, `buyer_id`, `listing_id`, `bidtime`, `bidprice`, `
 (17, 1, 7, '2020-11-10 17:25:46', '14.00', NULL),
 (18, 1, 16, '2020-11-10 17:25:46', '875.00', NULL),
 (19, 1, 10, '2020-11-10 17:25:46', '17.00', NULL),
-(20, 2, 5, '2020-11-10 17:25:46', '300.00', NULL);
+(20, 2, 5, '2020-11-10 17:25:46', '300.00', NULL),
+(41, 3, 1, '2020-11-10 15:24:32', '20000.00', NULL);
 
 -- --------------------------------------------------------
 
@@ -163,18 +164,18 @@ INSERT INTO `sellers` (`user_id`, `seller_id`) VALUES
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `email` text,
   `password` varchar(40) DEFAULT NULL,
   `account_type` int(11) NOT NULL COMMENT '0-buyer; 1-seller',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`user_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `email`, `password`, `account_type`) VALUES
+INSERT INTO `users` (`user_id`, `email`, `password`, `account_type`) VALUES
 (1, 'test1@test.com', 'abc', 0),
 (2, 'test2@test.com', 'abc', 0),
 (3, 'test3@test.com', 'abc', 0),
