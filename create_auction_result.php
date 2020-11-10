@@ -9,7 +9,7 @@
 /* TODO #1: Connect to MySQL database (perhaps by requiring a file that
             already does this). */
 $servername = "localhost";
-$username = "Jacob";
+$username = "root";
 $password = "";
 $database_name = "testdb";
 $connect=mysqli_connect($servername, $username, $password, $database_name);
@@ -28,8 +28,6 @@ else{
             issue, give some semi-helpful feedback to user. */
 
 			//THIS CHECK CAN BE COMPLETED SIMULTANIOUSLY WITH #3. Check after insert statement
-
-//still need to add posttime to html and var below but just testing this out for now.  
 
 $Title = $_POST['auctionTitle'];
 $Details = $_POST['auctionDetails'];
@@ -56,10 +54,10 @@ $result = mysqli_query($connect,$query)
 
 // If all is successful, let user know.
 if ($result){
-	echo('<div class="text-center">Auction successfully created! <a href="#">View your new listing.</a></div>');
+	echo('<div class="text-center">Auction successfully created! <a href="FIXME">View your new listing.</a></div>');
 }
 else{
-	echo "make sure to check data types and try again"; //just a filler return statement for now while testing
+	echo "make sure to check data types and try again"; 
 }
 
 

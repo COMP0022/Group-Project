@@ -2,35 +2,64 @@
 <?php require("utilities.php")?>
 
 <?php
-  // Get info from the URL:
-  $item_id = $_GET['item_id'];
+	// Get info from the URL:
+	$item_id = $_GET['item_id'];
+	$query = "SELECT * FROM listings WHERE listing_id = '$item_id'";
+	
+	//Use item_id to make a query to the database.
+	include 'opendb.php';
+	$result = mysqli_query($connection, $query)
+	or die('Error making select users query');
+	
+	$row = mysqli_fetch_array($result);
+	
+	$count_bid_query = "SELECT COUNT(*) FROM bids WHERE listing_id = {$row['listing_id']}";
+		
+		$count_bid_result = mysqli_query($connection, $count_bid_query)
+			or die('Error making top bid query');
+		
+		$bid_count = mysqli_fetch_array($count_bid_result);
+	
+	$title = $row[5];
+	$description = $row[4];
+	$num_bids = $bid_count[0];
+	$end_time = date_create($row[3]);
+	
+	
+	if ($num_bids == 0) 
+	{	
+		$current_price = $row['startprice'];
+	}
 
-  // TODO: Use item_id to make a query to the database.
-
-  // DELETEME: For now, using placeholder data.
-  $title = "Placeholder title";
-  $description = "Description blah blah blah";
-  $current_price = 30.50;
-  $num_bids = 1;
-  $end_time = new DateTime('2020-11-02T00:00:00');
-
-  // TODO: Note: Auctions that have ended may pull a different set of data,
-  //       like whether the auction ended in a sale or was cancelled due
-  //       to lack of high-enough bids. Or maybe not.
-  
-  // Calculate time to auction end:
-  $now = new DateTime();
-  
-  if ($now < $end_time) {
-    $time_to_end = date_diff($now, $end_time);
-    $time_remaining = ' (in ' . display_time_remaining($time_to_end) . ')';
-  }
-  
-  // TODO: If the user has a session, use it to make a query to the database
-  //       to determine if the user is already watching this item.
-  //       For now, this is hardcoded.
-  $has_session = true;
-  $watching = false;
+	 else 
+	{
+		$top_bid_query = "SELECT MAX(bidprice) FROM bids WHERE listing_id = '$item_id'";
+		
+		$top_bid_result = mysqli_query($connection, $top_bid_query)
+			or die('Error making top bid query');	
+		
+		$top_bid = mysqli_fetch_array($top_bid_result);
+		
+		$current_price = $top_bid[0];
+	}
+	
+	// TODO: Note: Auctions that have ended may pull a different set of data,
+	//			 like whether the auction ended in a sale or was cancelled due
+	//			 to lack of high-enough bids. Or maybe not.
+	
+	// Calculate time to auction end:
+	$now = new DateTime();
+	
+	if ($now < $end_time) {
+		$time_to_end = date_diff($now, $end_time);
+		$time_remaining = ' (in ' . display_time_remaining($time_to_end) . ')';
+	}
+	
+	// TODO: If the user has a session, use it to make a query to the database
+	//			 to determine if the user is already watching this item.
+	//			 For now, this is hardcoded.
+	$has_session = true;
+	$watching = false;
 ?>
 
 

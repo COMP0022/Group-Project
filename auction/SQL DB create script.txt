@@ -1,19 +1,21 @@
 CREATE DATABASE testdb;
 
-CREATE TABLE users (id INT, 
+CREATE TABLE users (id INT NOT NULL AUTO_INCREMENT, 
 email TEXT, 
 password TEXT, 
 PRIMARY KEY(id));
 
 CREATE TABLE sellers (user_id INT, 
-seller_id INT, 
+seller_id INT NOT NULL AUTO_INCREMENT, 
+PRIMARY KEY(seller_id),
 FOREIGN KEY(user_id) REFERENCES users(id));
 
 CREATE TABLE buyers (user_id INT, 
-buyer_id INT, 
+PRIMARY KEY(buyer_id),
+buyer_id INT NOT NULL AUTO_INCREMENT, 
 FOREIGN KEY(user_id) REFERENCES users(id));
 
-CREATE TABLE listings (listing_id INT, 
+CREATE TABLE listings (listing_id INT NOT NULL AUTO_INCREMENT, 
 seller_id INT, 
 posttime DATETIME, 
 endtime DATETIME, 
@@ -25,12 +27,14 @@ startprice DECIMAL(10,2),
 PRIMARY KEY(listing_id), 
 FOREIGN KEY(seller_id) REFERENCES sellers(seller_id));
 
-CREATE TABLE bids (bid_id INT, 
+CREATE TABLE bids (bid_id INT NOT NULL AUTO_INCREMENT, 
 buyer_id INT, 
+listing_id INT,
 bidtime DATETIME,   
 bidprice DECIMAL(10,2), 
 outcome BOOLEAN, 
 PRIMARY KEY(bid_id), 
+FOREIGN KEY(listing_id) REFERENCES listings(listing_id), 
 FOREIGN KEY(buyer_id) REFERENCES buyers(buyer_id));
 
 CREATE TABLE watchlist (user_id INT, 
