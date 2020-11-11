@@ -15,10 +15,10 @@ $database_name = "testdb";
 $connect=mysqli_connect($servername, $username, $password, $database_name);
 	
 if($connect){
-	echo "connection success";
+	echo "connection success.";
 }
 else{
-	echo "Connection failed";
+	echo "Connection failed.";
 }
 
 /* TODO #2: Extract form data into variables. Because the form was a 'post'
@@ -45,10 +45,14 @@ $End_Date = $_POST['auctionEndDate'];
 			/*we can either delete the "posttime" attribute from our database
 			or I can add an html script in create_auction.php
 			*/
-$query = "INSERT INTO listings (item_title, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$Details'), ('$Category'), ('$Start_price'), ('$Reserve_price'), ('$End_Date')";
+$query = "INSERT INTO listings (item_title, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title'), ('$Details'), ('$Category'), ($Start_price), ($Reserve_Price), ('$End_Date')";
+
+echo $query;
 
 $result = mysqli_query($connect,$query)
-	or die("Error inserting auction details");
+	or die(" Error inserting auction details");
+
+	
 	
 
 	
