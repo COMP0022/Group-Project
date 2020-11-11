@@ -1,8 +1,6 @@
 mylistings<?php include_once("header.php")?>
 <?php require("utilities.php")?>
 
-// replace mylistings to mylisitings
-
 <div class="container">
 
 <h2 class="my-3">My listings</h2>
