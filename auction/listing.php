@@ -2,10 +2,13 @@
 <?php require("utilities.php")?>
 
 <?php
+
 	// Get info from the URL:
-	$item_id = $_GET['item_id'];
-	$query = "SELECT * FROM listings WHERE listing_id = '$item_id'";
-	
+  $item_id = $_GET['item_id'];
+  $query = "SELECT * FROM listings WHERE listing_id = '$item_id'";
+  
+  $_SESSION['bided_item_id'] = $item_id; // Add the viewed item id into session info.
+  
 	//Use item_id to make a query to the database.
 	include 'opendb.php';
 	$result = mysqli_query($connection, $query)
@@ -42,7 +45,9 @@
 		
 		$current_price = $top_bid[0];
 	}
-	
+  
+  $_SESSION['bided_current_price'] = $current_price; // Add the viewed item's current price into session info.
+
 	// TODO: Note: Auctions that have ended may pull a different set of data,
 	//			 like whether the auction ended in a sale or was cancelled due
 	//			 to lack of high-enough bids. Or maybe not.
@@ -61,7 +66,6 @@
 	$has_session = true;
 	$watching = false;
 ?>
-
 
 <div class="container">
 
@@ -111,7 +115,7 @@
         <div class="input-group-prepend">
           <span class="input-group-text">£</span>
         </div>
-	    <input type="number" class="form-control" id="bid">
+	    <input type="number" class="form-control" id="bid" name="bid">
       </div>
       <button type="submit" class="btn btn-primary form-control">Place bid</button>
     </form>
@@ -195,4 +199,6 @@ function removeFromWatchlist(button) {
   }); // End of AJAX call
 
 } // End of addToWatchlist func
+
+
 </script>
