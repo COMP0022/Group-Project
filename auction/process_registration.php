@@ -20,6 +20,7 @@ else{
 $email = $_POST['email'];
 $Password = $_POST['password'];
 $repeat_password = $_POST['passwordrepeat'];
+$accounttype = $_POST['accountType'];
 
 
 
@@ -30,21 +31,32 @@ $repeat_password = $_POST['passwordrepeat'];
 $query = "INSERT INTO users (email, password) VALUES ('$email', '$Password')";
 $buyerquery = "INSERT INTO buyers (user_id) SELECT (id) FROM users";
 $sellerquery = "INSERT INTO sellers (user_id) SELECT (id) FROM users";
-/*only inserting data if the password and password repeat match. 
-noting to user that information did not insert */
+$emailquery = ("SELECT * FROM users WHERE email = '$email'");
 
+
+$emailresult = mysqli_query($connect, $emailquery);
+$emailcheck = mysqli_num_rows($emailresult)>0;
+if($emailcheck){
+	echo "email already taken";
+}
+else{
 if ($Password == $repeat_password){
 $result = mysqli_query($connect,$query)
 	or die(" insert into database unsuccessfull");
 }
+}
+/*only inserting data if the password and password repeat match. 
+noting to user that information did not insert */
+
+
 
 //if user registers as buyer then insert id into buyers table...auto incrementing buyer id
-if ($_POST['accountType'] == "buyer"){
+if ($accounttype == "buyer"){
 $buyerresult = mysqli_query($connect, $buyerquery);
 }
 
 //if user registers as seller then insert id into sellers table..auto incrementing seller id
-if ($_POST['accountType'] == "seller"){
+if ($accounttype == "seller"){
 $sellerresult = mysqli_query($connect, $sellerquery);
 }
 
