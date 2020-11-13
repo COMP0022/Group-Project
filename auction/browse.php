@@ -60,7 +60,8 @@
 	$results_per_page = 5;
 	if (!isset($_GET['keyword']))
 	{
-		 $query = "SELECT * FROM listings WHERE item_title IS NOT NULL";
+		 $query = "SELECT DISTINCT listings.listing_id, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
+FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL";
 	}
 
 	else
@@ -69,11 +70,13 @@
 
 		if ($keyword == '')
 		{
-			 $query = "SELECT * FROM listings WHERE item_title IS NOT NULL";
+			 $query = "SELECT DISTINCT listings.listing_id, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
+FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL";
 		}
 		else
 		{
-			 $query = "SELECT * FROM listings WHERE item_title LIKE '%$keyword%'";
+			 $query = "SELECT DISTINCT listings.listing_id, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
+FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title LIKE '%$keyword%'";
 		}
 	}
 
@@ -93,33 +96,56 @@
 		{
 			 $query .= " AND category = '$category'";
 		}
-	// We will have to make this mandatory and add a field so that if it is = to all it is as if it is blank.
 	}
 
 	if (!isset($_GET['order_by']))
 	{
 	// TODO: Define behavior if an order_by value has not been specified.
-		$query .= " ORDER BY endtime LIMIT $results_per_page";
+		$query_ordered = $query . " ORDER BY listings.endtime LIMIT $results_per_page";
 	}
 	else
 	{
-		$query .= " ORDER BY startprice LIMIT $results_per_page";
+		$order_by = $_GET['order_by'];
+		if ($order_by == '')
+		{
+			$query_ordered = $query . " ORDER BY listings.endtime LIMIT $results_per_page";
+		}
+		if ($order_by == 'pricelow')
+		{
+			$query_ordered = $query . " ORDER BY (CASE
+			WHEN bids.bidprice IS NULL THEN listings.startprice
+			ELSE bids.bidprice
+			END) LIMIT $results_per_page";
+		}
+		if ($order_by == 'pricehigh')
+		{
+			$query_ordered = $query . " ORDER BY (CASE
+			WHEN bids.bidprice IS NULL THEN listings.startprice
+			ELSE bids.bidprice
+			END) DESC LIMIT $results_per_page";
+		}
+		
+		if ($order_by == 'endtime')
+		{
+			$query_ordered = $query . " ORDER BY listings.endtime LIMIT $results_per_page";
+		}
+		
 	}
 
 	
 	include 'opendb.php';
 
 	$tmp = explode(" ",$query);
-	$tmp[1] = "COUNT(*)";
+	$tmp[1] = "COUNT(DISTINCT listings.listing_id),";
+	$tmp[2] = "";
 	$num_query = implode(" ",$tmp);
-
 	$num_result = mysqli_query($connection, $num_query)
 			or die('Error making count query');
 
 	$row = mysqli_fetch_array($num_result);
 
 	$num_results = $row[0]; 
-	echo $num_results;
+	
 	$max_page = ceil($num_results / $results_per_page);
 	if (!isset($_GET['page']))
 		{
@@ -135,7 +161,8 @@
 		{
 			$curr_page = $_GET['page'];
 			$offset = ($curr_page*$results_per_page)-$results_per_page;
-			$query .= " OFFSET $offset"; 
+			$query_ordered .= " OFFSET $offset"; 
+
 		}
 	}
 ?>
@@ -147,18 +174,16 @@
 
 <ul class="list-group">
 
-<!-- TODO: Use a while loop to print a list item for each auction listing
-     retrieved from the query -->
 
 <?php
 
-	$result = mysqli_query($connection, $query)
+	$result = mysqli_query($connection, $query_ordered)
 		or die('Error making select users query');
 	
+	echo $query_ordered;
+	
 	while ($row = mysqli_fetch_array($result))
-	{
-		//Will need to have something for if there haven't been any bids 
-		
+	{		
 		
 		$count_bid_query = "SELECT COUNT(*) FROM bids WHERE listing_id = {$row['listing_id']}";
 		
