@@ -1,78 +1,86 @@
-<?php include_once("header.php")?>
-
-<div class="container my-5">
-
 <?php
 
-// This function takes the form data and adds the new auction to the database.
+//connecting to database
 
-/* TODO #1: Connect to MySQL database (perhaps by requiring a file that
-            already does this). */
-$servername = "localhost";
-$username = "COMP0022";
-$password = "test";
-$database_name = "testdb";
+$servername = 'localhost';
+$username = 'COMP0022';
+$password = 'test';
+$database_name = 'testdb';
 $connect=mysqli_connect($servername, $username, $password, $database_name);
 	
+//checking connection and printing whether or not it connected	
 if($connect){
-	echo "connection success.";
+	echo "Connection success.";
 }
 else{
-	echo "Connection failed.";
+	echo "Connection failed";
 }
 
-/* TODO #2: Extract form data into variables. Because the form was a 'post'
-            form, its data can be accessed via $POST['auctionTitle'], 
-            $POST['auctionDetails'], etc. Perform checking on the data to
-            make sure it can be inserted into the database. If there is an
-            issue, give some semi-helpful feedback to user. */
-
-			//THIS CHECK CAN BE COMPLETED SIMULTANIOUSLY WITH #3. Check after insert statement
-
-//still need to add posttime to html and var below but just testing this out for now.  
-
-$Title = $_POST['auctionTitle'];
-$Details = $_POST['auctionDetails'];
-$Category = $_POST['auctionCategory'];
-$Start_price = $_POST['auctionStartPrice'];
-$Reserve_Price = $_POST['auctionReservePrice'];
-$End_Date = $_POST['auctionEndDate'];
+//defining POST variables
+$email = $_POST['email'];
+$Password = $_POST['password'];
+$repeat_password = $_POST['passwordrepeat'];
+$accounttype = $_POST['accountType'];
 
 
-/* TODO #3: If everything looks good, make the appropriate call to insert
-            data into the database. */
 
-			/*we can either delete the "posttime" attribute from our database
-			or I can add an html script in create_auction.php
-			*/
-$query = "INSERT INTO listings (item_title, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title'), ('$Details'), ('$Category'), ($Start_price), ($Reserve_Price), ('$End_Date')";
 
-echo $query;
 
+
+//Creating insert code to insert registration into user table of testdb database
+
+$query = "INSERT INTO users (email, password) VALUES ('$email', '$Password')";
+$buyerquery = "INSERT INTO buyers (user_id) SELECT (id) FROM users WHERE email = '$email'";
+$sellerquery = "INSERT INTO sellers (user_id) SELECT (id) FROM users WHERE email = '$email'";
+$emailquery = ("SELECT * FROM users WHERE email = '$email'");
+
+
+$emailresult = mysqli_query($connect, $emailquery);
+$emailcheck = mysqli_num_rows($emailresult)>0;
+if($emailcheck){
+	echo " Email already registered.";
+}
+else{
+if ($Password == $repeat_password){
 $result = mysqli_query($connect,$query)
-	or die(" Error inserting auction details");
+	or die(" insert into database unsuccessfull");
+}
+}
+/*only inserting data if the password and password repeat match. 
+noting to user that information did not insert */
 
-	
-	
 
-	
-	               
 
-// If all is successful, let user know.
-if ($result){
-	echo('<div class="text-center">Auction successfully created! <a href="#">View your new listing.</a></div>');
+//if user registers as buyer then insert id into buyers table...auto incrementing buyer id
+if ($accounttype == "buyer " and $accounttype == "seller"){
+$buyerresult = mysqli_query($connect, $buyerquery);	
+$sellerresult = mysqli_query($connect, $sellerquery);
+}
+elseif ($accounttype == "buyer"){
+$buyerresult = mysqli_query($connect, $buyerquery);
+}
+
+//if user registers as seller then insert id into sellers table..auto incrementing seller id
+elseif ($accounttype == "seller"){
+$sellerresult = mysqli_query($connect, $sellerquery);
+}
+
+
+
+
+
+// telling user if their passwords do not match
+
+if ($result and $Password == $repeat_password)
+{
+	echo " Registered successfully. Registered with email: $email";
 }
 else{
-	echo "make sure to check data types and try again"; //just a filler return statement for now while testing
+	echo " Passwords do not match";
 }
-
-
 mysqli_close($connect);
+	
+?> 
 
 
-?>
 
-</div>
-
-
-<?php include_once("footer.php")?>
