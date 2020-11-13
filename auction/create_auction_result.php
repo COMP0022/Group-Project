@@ -9,8 +9,8 @@
 /* TODO #1: Connect to MySQL database (perhaps by requiring a file that
             already does this). */
 $servername = "localhost";
-$username = "Jacob";
-$password = "";
+$username = "COMP0022";
+$password = "test";
 $database_name = "testdb";
 $connect=mysqli_connect($servername, $username, $password, $database_name);
 	
