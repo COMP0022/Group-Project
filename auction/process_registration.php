@@ -40,11 +40,13 @@ $emailresult = mysqli_query($connect, $emailquery);
 $emailcheck = mysqli_num_rows($emailresult)>0;
 if($emailcheck){
 	echo " Email already registered.";
+	header('Refresh:3, url=browse.php'); //add sessions later
 }
 else{
 if ($Password == $repeat_password){
 $result = mysqli_query($connect,$query)
 	or die(" insert into database unsuccessfull");
+	header('Refresh:3, url=browse.php'); //add sessions later.
 }
 }
 /*only inserting data if the password and password repeat match. 
@@ -76,6 +78,7 @@ if ($result and $Password == $repeat_password)
 }
 else{
 	echo " Passwords do not match";
+	header('Refresh:3; url=register.php'); //add sessions later.  
 }
 mysqli_close($connect);
 	
