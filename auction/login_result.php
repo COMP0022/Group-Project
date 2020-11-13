@@ -19,8 +19,8 @@ if (!$check){ echo('<div class="text-center">Login Failed. Email does not exist 
 else {  
 
     $_SESSION['logged_in'] = true;
-    $userid = $check['user_id'];
-    $_SESSION['user_id'] = $check['user_id'];
+    $userid = $check['id'];
+    $_SESSION['user_id'] = $check['id'];
     $seller_query = " SELECT seller_id FROM sellers WHERE user_id=$userid; ";
     $seller_result = mysqli_query($connection,$seller_query);
     $seller = mysqli_fetch_array($seller_result);
