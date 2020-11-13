@@ -180,7 +180,6 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 	$result = mysqli_query($connection, $query_ordered)
 		or die('Error making select users query');
 	
-	echo $query_ordered;
 	
 	while ($row = mysqli_fetch_array($result))
 	{		
