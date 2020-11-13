@@ -21,16 +21,17 @@ else {
     $_SESSION['logged_in'] = true;
     $userid = $check['id'];
     $_SESSION['user_id'] = $check['id'];
+
     $seller_query = " SELECT seller_id FROM sellers WHERE user_id=$userid; ";
     $seller_result = mysqli_query($connection,$seller_query);
     $seller = mysqli_fetch_array($seller_result);
-    if($seller_result) {$_SESSION['account_type'] = 'seller';
+    if($seller) {$_SESSION['account_type'] = 'seller';
     $_SESSION['seller_id']=$seller['seller_id'];}  // Seller ID in session
 
     $buyer_query = " SELECT * FROM buyers WHERE user_id = $userid ";
     $buyer_result = mysqli_query($connection,$buyer_query);
     $buyer = mysqli_fetch_array($buyer_result);
-    if($buyer_result) {$_SESSION['account_type'] = 'buyer';
+    if($buyer) {$_SESSION['account_type'] = 'buyer';
     $_SESSION['buyer_id']=$buyer['buyer_id'];}  // Buyer ID in session
 
     if(!isset($_SESSION['account_type'])) {$_SESSION['account_type']= 'visitor';}  
