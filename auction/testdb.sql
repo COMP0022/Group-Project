@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 10, 2020 at 03:41 PM
+-- Generation Time: Nov 11, 2020 at 02:38 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.3.21
 
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `bids` (
   PRIMARY KEY (`bid_id`),
   KEY `listing_id` (`listing_id`),
   KEY `buyer_id` (`buyer_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=42 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=44 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `bids`
@@ -65,7 +65,9 @@ INSERT INTO `bids` (`bid_id`, `buyer_id`, `listing_id`, `bidtime`, `bidprice`, `
 (18, 1, 16, '2020-11-10 17:25:46', '875.00', NULL),
 (19, 1, 10, '2020-11-10 17:25:46', '17.00', NULL),
 (20, 2, 5, '2020-11-10 17:25:46', '300.00', NULL),
-(41, 3, 1, '2020-11-10 15:24:32', '20000.00', NULL);
+(41, 3, 1, '2020-11-10 15:24:32', '20000.00', NULL),
+(42, 3, 1, '2020-11-11 14:14:47', '23000.00', NULL),
+(43, 3, 1, '2020-11-11 14:36:30', '25000.00', NULL);
 
 -- --------------------------------------------------------
 
