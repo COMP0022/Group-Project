@@ -3,8 +3,8 @@
 //connecting to database
 
 $servername = 'localhost';
-$username = 'Jacob';
-$password = '';
+$username = 'COMP0022';
+$password = 'test';
 $database_name = 'testdb';
 $connect=mysqli_connect($servername, $username, $password, $database_name);
 	
@@ -29,15 +29,15 @@ $accounttype = $_POST['accountType'];
 //Creating insert code to insert registration into user table of testdb database
 
 $query = "INSERT INTO users (email, password) VALUES ('$email', '$Password')";
-$buyerquery = "INSERT INTO buyers (user_id) SELECT (id) FROM users";
-$sellerquery = "INSERT INTO sellers (user_id) SELECT (id) FROM users";
+$buyerquery = "INSERT INTO buyers (user_id) SELECT (id) FROM users WHERE email = '$email'";
+$sellerquery = "INSERT INTO sellers (user_id) SELECT (id) FROM users WHERE email = '$email'";
 $emailquery = ("SELECT * FROM users WHERE email = '$email'");
 
 
 $emailresult = mysqli_query($connect, $emailquery);
 $emailcheck = mysqli_num_rows($emailresult)>0;
 if($emailcheck){
-	echo "email already taken";
+	echo " email already registered.";
 }
 else{
 if ($Password == $repeat_password){
