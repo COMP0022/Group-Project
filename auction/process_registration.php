@@ -10,7 +10,7 @@ $connect=mysqli_connect($servername, $username, $password, $database_name);
 	
 //checking connection and printing whether or not it connected	
 if($connect){
-	echo "connection success.";
+	echo "Connection success.";
 }
 else{
 	echo "Connection failed";
@@ -21,6 +21,8 @@ $email = $_POST['email'];
 $Password = $_POST['password'];
 $repeat_password = $_POST['passwordrepeat'];
 $accounttype = $_POST['accountType'];
+
+
 
 
 
@@ -37,7 +39,7 @@ $emailquery = ("SELECT * FROM users WHERE email = '$email'");
 $emailresult = mysqli_query($connect, $emailquery);
 $emailcheck = mysqli_num_rows($emailresult)>0;
 if($emailcheck){
-	echo " email already registered.";
+	echo " Email already registered.";
 }
 else{
 if ($Password == $repeat_password){
@@ -51,6 +53,8 @@ noting to user that information did not insert */
 
 
 //if user registers as buyer then insert id into buyers table...auto incrementing buyer id
+
+
 if ($accounttype == "buyer"){
 $buyerresult = mysqli_query($connect, $buyerquery);
 }
@@ -59,6 +63,8 @@ $buyerresult = mysqli_query($connect, $buyerquery);
 if ($accounttype == "seller"){
 $sellerresult = mysqli_query($connect, $sellerquery);
 }
+
+
 
 
 
