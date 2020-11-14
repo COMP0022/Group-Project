@@ -30,13 +30,21 @@ else{
 			//THIS CHECK CAN BE COMPLETED SIMULTANIOUSLY WITH #3. Check after insert statement
 
 //still need to add posttime to html and var below but just testing this out for now.  
-
 $Title = $_POST['auctionTitle'];
 $Details = $_POST['auctionDetails'];
 $Category = $_POST['auctionCategory'];
 $Start_price = $_POST['auctionStartPrice'];
 $Reserve_Price = $_POST['auctionReservePrice'];
 $End_Date = $_POST['auctionEndDate'];
+
+date_default_timezone_get('Europe/London');
+$current = date('Y-m-d H:i', time());
+$posttime = $current;
+
+
+//session--login seller id inserted into listings table
+$seller_ID = $_SESSION['seller_id'];
+ 
 
 
 /* TODO #3: If everything looks good, make the appropriate call to insert
@@ -45,7 +53,7 @@ $End_Date = $_POST['auctionEndDate'];
 			/*we can either delete the "posttime" attribute from our database
 			or I can add an html script in create_auction.php
 			*/
-$query = "INSERT INTO listings (item_title, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title'), ('$Details'), ('$Category'), ($Start_price), ($Reserve_Price), ('$End_Date')";
+$query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title'), ($posttime), ($seller_ID), ('$Details'), ('$Category'), ($Start_price), ($Reserve_Price), ('$End_Date')";
 
 echo $query;
 
