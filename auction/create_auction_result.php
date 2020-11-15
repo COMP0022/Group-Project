@@ -38,7 +38,7 @@ $Reserve_Price = $_POST['auctionReservePrice'];
 $End_Date = $_POST['auctionEndDate'];
 
 date_default_timezone_get('Europe/London');
-$current = date('Y-m-d H:i:s', time());
+$current = date('Y-m-d H:i', time());
 $posttime = $current;
 
 
@@ -53,7 +53,7 @@ $seller_ID = $_SESSION['seller_id'];
 			/*we can either delete the "posttime" attribute from our database
 			or I can add an html script in create_auction.php
 			*/
-$query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title'), ('$posttime'), ($seller_ID), ('$Details'), ('$Category'), ($Start_price), ($Reserve_Price), ('$End_Date')";
+$query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $seller_ID, '$Details', '$Category', $Start_price, $Reserve_Price, '$End_Date')";
 
 echo $query;
 
