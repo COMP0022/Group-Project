@@ -68,7 +68,7 @@ $result = mysqli_query($connect,$query)
 
 // If all is successful, let user know.
 if ($result){
-	echo('<div class="text-center">Auction successfully created! <a href="#">View your new listing.</a></div>');
+	echo('<div class="text-center">Auction successfully created! <a href="mylistings.php">View your new listing.</a></div>');
 }
 else{
 	echo "make sure to check data types and try again"; //just a filler return statement for now while testing
