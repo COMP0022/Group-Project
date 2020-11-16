@@ -1,7 +1,7 @@
 <?php
   // FIXME: At the moment, I've allowed these values to be set manually.
   // But eventually, with a database, these should be set automatically
-  // ONLY after the user's login credentials have been verified via a 
+  // ONLY after the user's login credentials have been verified via a
   // database query.
   session_start();
   // $_SESSION['logged_in'] = false;
@@ -14,7 +14,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  
+
   <!-- Bootstrap and FontAwesome CSS -->
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -33,7 +33,7 @@
   <a class="navbar-brand" href="#">Site Name <!--CHANGEME!--></a>
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
-    
+
 <?php
   // Displays either login or logout on the right, depending on user's
   // current status (session).
@@ -88,7 +88,7 @@
 
       <!-- Modal body -->
       <div class="modal-body">
-        <form method="POST" action="login_result.php">
+        <form method="post" action="login_result.php">
           <div class="form-group">
             <label for="email">Email</label>
             <input type="text" class="form-control" name="email" id="email" name="email" placeholder="Email">
@@ -97,7 +97,7 @@
             <label for="password">Password</label>
             <input type="password" class="form-control" name="password" id="password" name="password" placeholder="Password">
           </div>
-          <button type="submit" class="btn btn-primary form-control">Sign in</button>
+          <button type="submit" name ="Login" class="btn btn-primary form-control">Login</button>
         </form>
         <div class="text-center">or <a href="register.php">create an account</a></div>
       </div>

@@ -56,11 +56,16 @@
 </div>
 
 <?php
-	// Retrieve these from the URL
+  session_start();
+  if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'seller')
+
+{
+  $seller_userid = $_SESSION['seller_id'];
+
 	$results_per_page = 5;
 	if (!isset($_GET['keyword']))
 	{
-		 $query = "SELECT * FROM listings WHERE item_title IS NOT NULL";
+		 $query = "SELECT * FROM listings WHERE item_title IS NOT NULL AND seller_id = $seller_userid";
 	}
 
 	else
@@ -69,11 +74,11 @@
 
 		if ($keyword == '')
 		{
-			 $query = "SELECT * FROM listings WHERE item_title IS NOT NULL";
+			 $query = "SELECT * FROM listings WHERE item_title IS NOT NULL AND seller_id = $seller_userid";
 		}
 		else
 		{
-			 $query = "SELECT * FROM listings WHERE item_title LIKE '%$keyword%'";
+			 $query = "SELECT * FROM listings WHERE item_title LIKE '%$keyword%' AND seller_id = $seller_userid";
 		}
 	}
 
@@ -105,6 +110,7 @@
 	{
 		$query .= " ORDER BY startprice LIMIT $results_per_page";
 	}
+}
 
 
 	include 'opendb.php';
@@ -150,6 +156,14 @@
 <!-- TODO: Use a while loop to print a list item for each auction listing
      retrieved from the query -->
 
+
+     <?php
+
+
+       // $seller_listings_query = "SELECT * FROM listings WHERE seller_id = $seller_userid"
+
+
+      ?>
 <?php
 
 	$result = mysqli_query($connection, $query)
