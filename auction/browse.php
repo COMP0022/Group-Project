@@ -56,6 +56,8 @@
 </div>
 
 <?php
+	
+	
 	// Retrieve these from the URL
 	$results_per_page = 5;
 	if (!isset($_GET['keyword']))
@@ -108,8 +110,21 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		$order_by = $_GET['order_by'];
 		if ($order_by == '')
 		{
-			$query_ordered = $query . " ORDER BY listings.endtime LIMIT $results_per_page";
+			$query_ordered = $query . " ORDER BY (CASE 
+			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
+			ELSE TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime) 
+			END) LIMIT $results_per_page";
 		}
+				
+		if ($order_by == 'date')
+		{
+			$query_ordered = $query . " ORDER BY (CASE 
+			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
+			ELSE TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime) 
+			END) LIMIT $results_per_page";
+	
+		}
+		
 		if ($order_by == 'pricelow')
 		{
 			$query_ordered = $query . " ORDER BY (CASE
@@ -124,17 +139,16 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 			ELSE bids.bidprice
 			END) DESC LIMIT $results_per_page";
 		}
-		
-		if ($order_by == 'endtime')
-		{
-			$query_ordered = $query . " ORDER BY listings.endtime LIMIT $results_per_page";
-		}
-		
+
 	}
 
 	
 	include 'opendb.php';
+	$update_query = "UPDATE listings SET finished = 1 WHERE DATEDIFF(CURRENT_TIMESTAMP,endtime) > 0";
+	$update_result = mysqli_query($connection, $update_query)
+			or die('Error updating table');
 
+	
 	$tmp = explode(" ",$query);
 	$tmp[1] = "COUNT(DISTINCT listings.listing_id),";
 	$tmp[2] = "";
