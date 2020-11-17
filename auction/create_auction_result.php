@@ -54,7 +54,6 @@ $seller_ID = $_SESSION['seller_id'];
 			*/
 $query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $seller_ID, '$Details', '$Category', $Start_price, $Reserve_Price, '$End_Date')";
 
-echo $query;
 
 $result = mysqli_query($connect,$query)
 	or die(" Error inserting auction details");
