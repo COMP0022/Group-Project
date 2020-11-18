@@ -63,7 +63,14 @@
 	// TODO: If the user has a session, use it to make a query to the database
 	//			 to determine if the user is already watching this item.
 	//			 For now, this is hardcoded.
-	$has_session = true;
+	if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) 
+	{
+		$has_session = true;
+	}
+	else 
+	{
+		$has_session = false;
+	}
 	$watching = false;
 ?>
 

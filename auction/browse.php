@@ -57,6 +57,7 @@
 
 <?php
 	
+	echo $_SESSION['user_id'];
 	
 	// Retrieve these from the URL
 	$results_per_page = 5;
