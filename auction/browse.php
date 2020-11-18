@@ -152,12 +152,13 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 
 	
 	$tmp = explode(" ",$query);
-	$tmp[1] = "COUNT(DISTINCT listings.listing_id),";
+	$tmp[1] = "COUNT(DISTINCT listings.listing_id)";
 	$tmp[2] = "";
 	$tmp[3] = "";
 	$tmp[4] = "";
 	$tmp[5] = "";
 	$tmp[6] = "";
+	$tmp[7] = "FROM ";
 
 	
 	$num_query = implode(" ",$tmp);
