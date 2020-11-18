@@ -57,13 +57,13 @@
 
 <?php
 	
-	echo $_SESSION['user_id'];
+	
 	
 	// Retrieve these from the URL
 	$results_per_page = 5;
 	if (!isset($_GET['keyword']))
 	{
-		 $query = "SELECT DISTINCT listings.listing_id, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
+		 $query = "SELECT DISTINCT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL";
 	}
 
@@ -73,12 +73,12 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 
 		if ($keyword == '')
 		{
-			 $query = "SELECT DISTINCT listings.listing_id, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
+			 $query = "SELECT DISTINCT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL";
 		}
 		else
 		{
-			 $query = "SELECT DISTINCT listings.listing_id, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
+			 $query = "SELECT DISTINCT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title LIKE '%$keyword%'";
 		}
 	}
@@ -146,7 +146,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 
 	
 	include 'opendb.php';
-	$update_query = "UPDATE listings SET finished = 1 WHERE DATEDIFF(CURRENT_TIMESTAMP,endtime) > 0";
+	$update_query = "UPDATE listings SET finished = 1 WHERE TIMEDIFF(CURRENT_TIMESTAMP,endtime) > 0";
 	$update_result = mysqli_query($connection, $update_query)
 			or die('Error updating table');
 
@@ -158,11 +158,11 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 	$tmp[4] = "";
 	$tmp[5] = "";
 	$tmp[6] = "";
-	$tmp[7] = "FROM ";
+	$tmp[7] = "";
+	$tmp[8] = "FROM ";
 
 	
 	$num_query = implode(" ",$tmp);
-	echo $num_query;
 	$num_result = mysqli_query($connection, $num_query)
 			or die('Error making count query');
 
@@ -200,7 +200,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 
 
 <?php
-	echo $query_ordered;
+	
 	
 	$result = mysqli_query($connection, $query_ordered)
 		or die('Error making select users query');
