@@ -36,7 +36,7 @@ $Start_price = $_POST['auctionStartPrice'];
 $Reserve_Price = $_POST['auctionReservePrice'];
 $End_Date = $_POST['auctionEndDate'];
 
-date_default_timezone_get('Europe/London');
+date_default_timezone_set('Europe/London');
 $current = date('Y-m-d H:i', time());
 $posttime = $current;
 
