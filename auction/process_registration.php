@@ -72,13 +72,17 @@ $sellerresult = mysqli_query($connect, $sellerquery);
 
 // telling user if their passwords do not match
 
-if ($result and $Password == $repeat_password)
+if ($result)
 {
 	echo " Registered successfully. Registered with email: $email";
 }
 else{
-	echo " Passwords do not match";
+	echo " registered unsuccessfully";
 	header('Refresh:3; url=register.php'); //add sessions later.  
+}
+
+if ($Password != $repeat_password){
+	echo "passwords do not match";
 }
 mysqli_close($connect);
 	
