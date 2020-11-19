@@ -168,6 +168,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 
 	
 	$num_query = implode(" ",$tmp);
+
 	$num_result = mysqli_query($connection, $num_query)
 			or die('Error making count query');
 
@@ -175,7 +176,12 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 
 	$num_results = $row[0]; 
 	
-	$max_page = ceil($num_results / $results_per_page);
+	if ($num_results < 1) {
+		$max_page = 1;
+	}
+	else {
+		$max_page = ceil($num_results / $results_per_page);
+	}
 	if (!isset($_GET['page']))
 		{
 		$curr_page = 1;
@@ -198,14 +204,17 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 
 <div class="container mt-5">
 
-<!-- TODO: If result set is empty, print an informative message. Otherwise... -->
+<?php
+if ($num_results < 1) {
+		echo ("Sorry, your search didn't yield any results! Perhaps try again with a different keyword or category...");
+	}
+?> 
 
 
 <ul class="list-group">
 
 
 <?php
-	
 	
 	$result = mysqli_query($connection, $query_ordered)
 		or die('Error making select users query');
