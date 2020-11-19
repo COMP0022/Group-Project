@@ -1,6 +1,6 @@
 <?php include_once("header.php")?>
 <?php require("utilities.php")?>
-
+<?php include 'opendb.php'?>
 <div class="container">
 
 <h2 class="my-3">Browse listings</h2>
@@ -28,10 +28,15 @@
       <div class="form-group">
         <label for="cat" class="sr-only">Search within:</label>
         <select class="form-control" id="cat" name="cat" >
-          <option selected value="all">All categories</option>
-          <option value="fill">Fill me in</option>
-          <option value="with">with options</option>
-          <option value="populated">populated from a database?</option>
+		<option selected value="all">All categories</option>
+		<?php $cat_query = "SELECT name FROM categories";
+		$cat_result = mysqli_query($connection, $cat_query)
+			or die('Error making select cat query');
+	
+		while ($cat_row = mysqli_fetch_array($cat_result)) {
+			echo ('<option value='. $cat_row[0]. '>'. $cat_row[0] .'</option>');
+		}
+		?>
         </select>
       </div>
     </div>
@@ -145,7 +150,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 	}
 
 	
-	include 'opendb.php';
+
 	$update_query = "UPDATE listings SET finished = 1 WHERE TIMEDIFF(CURRENT_TIMESTAMP,endtime) > 0";
 	$update_result = mysqli_query($connection, $update_query)
 			or die('Error updating table');
