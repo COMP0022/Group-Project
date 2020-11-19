@@ -1,4 +1,5 @@
 <?php include_once("header.php")?>
+<?php include 'opendb.php'?>
 
 <?php
 //I (Jacob) already uncommented out this section. check original if questions arise.  
@@ -40,20 +41,14 @@
           <label for="auctionCategory" class="col-sm-2 col-form-label text-right">Category</label>
           <div class="col-sm-10">
             <select name="auctionCategory" class="form-control" id="auctionCategory">
-              <option selected>Choose...</option>
-			  <option value="Art">Art</option>
-			  <option value="Antiques">Antiques</option>
-			  <option value="Bicycle">Bicycle</option>
-			  <option value="Books">Books</option>
-              <option value="Car">Car</option>
-			  <option value="Clothes">Clothes</option>
-			  <option value="Furniture">Furniture</option>
-			  <option value="Health">Health</option>
-			  <option value="Music">Music</option>
-              <option value="Technology">Technology</option>
-			  <option value="Toys">Toys</option>
-			  <option value="Travel">Travel</option>
-              <option value="Everything_Else">Everything Else</option>
+              <?php $cat_query = "SELECT name FROM categories";
+		$cat_result = mysqli_query($connection, $cat_query)
+			or die('Error making select cat query');
+	
+		while ($cat_row = mysqli_fetch_array($cat_result)) {
+			echo ('<option value='. $cat_row[0]. '>'. $cat_row[0] .'</option>');
+		}
+		?>
             </select>
             <small id="categoryHelp" class="form-text text-muted"><span class="text-danger">* Required.</span> Select a category for this item.</small>
           </div>
