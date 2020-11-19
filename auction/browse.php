@@ -151,7 +151,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 
 	
 
-	$update_query = "UPDATE listings SET finished = 1 WHERE TIMEDIFF(CURRENT_TIMESTAMP,endtime) > 0";
+	$update_query = "UPDATE listings SET finished = 1 WHERE CURRENT_TIMESTAMP - endtime > 0";
 	$update_result = mysqli_query($connection, $update_query)
 			or die('Error updating table');
 
