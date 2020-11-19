@@ -40,14 +40,14 @@ VALUES
 ('1' , '11' , CURRENT_TIMESTAMP() , '50' , NULL),
 ('1' , '14' , CURRENT_TIMESTAMP() , '250' , NULL),
 ('1' , '5' , CURRENT_TIMESTAMP() , '300' , NULL),
-('3' , '13' , CURRENT_TIMESTAMP() , '30' , NULL),
+('3' , '12' , CURRENT_TIMESTAMP() , '30' , NULL),
 ('3' , '8' , CURRENT_TIMESTAMP() , '120' , NULL),
 ('2' , '9' , CURRENT_TIMESTAMP() , '12' , NULL),
 ('3' , '11' , CURRENT_TIMESTAMP() , '50' , NULL),
-('1' , '15' , CURRENT_TIMESTAMP() , '55' , NULL),
+('1' , '12' , CURRENT_TIMESTAMP() , '55' , NULL),
 ('3' , '7' , CURRENT_TIMESTAMP() , '14' , NULL),
 ('1' , '7' , CURRENT_TIMESTAMP() , '14' , NULL),
-('1' , '16' , CURRENT_TIMESTAMP() , '875' , NULL),
+('1' , '12' , CURRENT_TIMESTAMP() , '875' , NULL),
 ('1' , '10' , CURRENT_TIMESTAMP() , '17' , NULL),
 ('2' , '5' , CURRENT_TIMESTAMP() , '300' , NULL);
 
