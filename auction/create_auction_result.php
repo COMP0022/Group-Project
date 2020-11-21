@@ -52,7 +52,9 @@ $seller_ID = $_SESSION['seller_id'];
 			/*we can either delete the "posttime" attribute from our database
 			or I can add an html script in create_auction.php
 			*/
-$query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $seller_ID, '$Details', '$Category', $Start_price, $Reserve_Price, '$End_Date')";
+$query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $seller_ID, '$Details', (SELECT catID FROM categories WHERE name = '$Category'), $Start_price, $Reserve_Price, '$End_Date')";
+
+echo $query;
 
 
 $result = mysqli_query($connect,$query)
