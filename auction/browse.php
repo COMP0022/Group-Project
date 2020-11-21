@@ -29,7 +29,7 @@
         <label for="cat" class="sr-only">Search within:</label>
         <select class="form-control" id="cat" name="cat" >
 		<option selected value="all">All categories</option>
-		<?php $cat_query = "SELECT name FROM categories";
+		<?php $cat_query = "SELECT name FROM categories ORDER BY name";
 		$cat_result = mysqli_query($connection, $cat_query)
 			or die('Error making select cat query');
 	
@@ -96,13 +96,14 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 	else
 	{
 		$category = $_GET['cat'];
-		if ($category = "all")
+		
+		if ($category == "all")
 		{
 			 $query .= " AND category IS NOT NULL";
 		}
 		else
 		{
-			 $query .= " AND category = '$category'";
+			 $query .= " AND category LIKE '%$category%'";
 		}
 	}
 
@@ -111,7 +112,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 	// TODO: Define behavior if an order_by value has not been specified.
 		$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE 
 			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
-			ELSE TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime) 
+			ELSE ADDTIME((TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)),\"10000:0:0\") 
 			END) LIMIT $results_per_page";
 		
 
@@ -123,7 +124,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		{
 			$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE 
 			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
-			ELSE TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime) 
+			ELSE ADDTIME((TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)),\"10000:0:0\") 
 			END) LIMIT $results_per_page";
 		}
 				
@@ -131,7 +132,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		{
 			$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE 
 			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
-			ELSE TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime) 
+			ELSE ADDTIME((TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)),\"10000:0:0\") 
 			END) LIMIT $results_per_page";
 	
 		}
