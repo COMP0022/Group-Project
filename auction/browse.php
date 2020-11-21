@@ -109,7 +109,11 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 	if (!isset($_GET['order_by']))
 	{
 	// TODO: Define behavior if an order_by value has not been specified.
-		$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY listings.endtime LIMIT $results_per_page";
+		$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE 
+			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
+			ELSE TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime) 
+			END) LIMIT $results_per_page";
+		
 
 	}
 	else
@@ -135,15 +139,15 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		if ($order_by == 'pricelow')
 		{
 			$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE
-			WHEN bids.bidprice IS NULL THEN listings.startprice
-			ELSE bids.bidprice
+			WHEN MAX(bids.bidprice) IS NULL THEN listings.startprice
+			ELSE MAX(bids.bidprice)
 			END) LIMIT $results_per_page";
 		}
 		if ($order_by == 'pricehigh')
 		{
 			$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE
-			WHEN bids.bidprice IS NULL THEN listings.startprice
-			ELSE bids.bidprice
+			WHEN MAX(bids.bidprice) IS NULL THEN listings.startprice
+			ELSE MAX(bids.bidprice)
 			END) DESC LIMIT $results_per_page";
 		}
 
@@ -213,7 +217,6 @@ if ($num_results < 1) {
 
 
 <?php
-	
 	$result = mysqli_query($connection, $query_ordered)
 		or die('Error making select users query');
 	
