@@ -32,6 +32,7 @@ if ($_SESSION['logged_in'] == true && $_SESSION['account_type']=='buyer')  // Ch
         if($bid_result)
         {
             echo "Bid placed successfully at: " . $bid_time;
+			include_once 'send_bid_notif_buyer.php';
             header("refresh:2;url=browse.php");                  // notify the user of success bid placement and redirection
         }
         mysqli_close($connection);
