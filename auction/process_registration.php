@@ -48,14 +48,14 @@ if($emailcheck){
 }
 else{
 if (filter_var($email, FILTER_VALIDATE_EMAIL)){
-	if ($Password == $repeat_password and $Password != ''){
+	if ($Password == $repeat_password and strlen($Password != 0)){
 		$result = mysqli_query($connect,$query)
 		or die(" insert into database unsuccessfull ");
 		header('Refresh:3, url=browse.php'); //add sessions later.
 }
 }
 else{
-	echo " Email is not valid. ";
+	echo " Email or password is not valid. ";
 }
 }
 /*only inserting data if the password and password repeat match. 
