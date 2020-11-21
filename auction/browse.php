@@ -68,7 +68,7 @@
 	$results_per_page = 5;
 	if (!isset($_GET['keyword']))
 	{
-		 $query = "SELECT DISTINCT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
+		 $query = "SELECT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL";
 	}
 
@@ -78,12 +78,12 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 
 		if ($keyword == '')
 		{
-			 $query = "SELECT DISTINCT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
+			 $query = "SELECT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL";
 		}
 		else
 		{
-			 $query = "SELECT DISTINCT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
+			 $query = "SELECT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title LIKE '%$keyword%'";
 		}
 	}
@@ -109,7 +109,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 	if (!isset($_GET['order_by']))
 	{
 	// TODO: Define behavior if an order_by value has not been specified.
-		$query_ordered = $query . " ORDER BY listings.endtime LIMIT $results_per_page";
+		$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY listings.endtime LIMIT $results_per_page";
 
 	}
 	else
@@ -117,7 +117,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		$order_by = $_GET['order_by'];
 		if ($order_by == '')
 		{
-			$query_ordered = $query . " ORDER BY (CASE 
+			$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE 
 			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
 			ELSE TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime) 
 			END) LIMIT $results_per_page";
@@ -125,7 +125,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 				
 		if ($order_by == 'date')
 		{
-			$query_ordered = $query . " ORDER BY (CASE 
+			$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE 
 			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
 			ELSE TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime) 
 			END) LIMIT $results_per_page";
@@ -134,14 +134,14 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		
 		if ($order_by == 'pricelow')
 		{
-			$query_ordered = $query . " ORDER BY (CASE
+			$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE
 			WHEN bids.bidprice IS NULL THEN listings.startprice
 			ELSE bids.bidprice
 			END) LIMIT $results_per_page";
 		}
 		if ($order_by == 'pricehigh')
 		{
-			$query_ordered = $query . " ORDER BY (CASE
+			$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE
 			WHEN bids.bidprice IS NULL THEN listings.startprice
 			ELSE bids.bidprice
 			END) DESC LIMIT $results_per_page";
@@ -163,12 +163,10 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 	$tmp[4] = "";
 	$tmp[5] = "";
 	$tmp[6] = "";
-	$tmp[7] = "";
-	$tmp[8] = "FROM ";
+	$tmp[7] = "FROM ";
 
 	
 	$num_query = implode(" ",$tmp);
-
 	$num_result = mysqli_query($connection, $num_query)
 			or die('Error making count query');
 
