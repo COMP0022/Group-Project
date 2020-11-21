@@ -53,23 +53,27 @@ VALUES
 
 INSERT INTO categories 
 VALUES ('CAT001', 'Home & Garden'),
-('CAT002', 'Clothes, Footwear & Accessories'),
+('CAT002', 'Clothes),
 ('CAT003', 'Baby & Kids Stuff'),
-('CAT004', 'Sports, Leisure & Travel'),
+('CAT004', 'Sports'),
 ('CAT005', 'Office Furniture & Equipment'),
 ('CAT006', 'Other Goods'),
-('CAT007', 'Cameras, Camcorders & Studio Equipment'),
+('CAT007', 'Cameras'),
 ('CAT008', 'Appliances'),
-('CAT009', 'Phones, Mobile Phones & Telecoms'),
+('CAT009', 'Phones'),
 ('CAT010', 'Computers & Software'),
-('CAT011', 'Music, Films, Books & Games'),
+('CAT011', 'Music'),
 ('CAT012', 'Health & Beauty'),
 ('CAT013', 'Musical Instruments & DJ Equipment'),
 ('CAT014', 'DIY Tools & Materials'),
 ('CAT015', 'Audio & Stereo'),
-('CAT016', 'TV, DVD, Blu-Ray & Videos'),
+('CAT016', 'TVs'),
 ('CAT017', 'Video Games & Consoles'),
 ('CAT018', 'Christmas Decorations'),
-('CAT019', 'Tickets');
+('CAT019', 'Tickets'),
+('CAT020', 'Leisure & Travel'),
+('CAT021', 'Films'),
+('CAT022', 'Books & Games'),
+('CAT023', 'Bicycle & Transport');
 
 
