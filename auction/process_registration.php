@@ -48,7 +48,7 @@ if($emailcheck){
 }
 else{
 if (filter_var($email, FILTER_VALIDATE_EMAIL)){
-	if ($Password == $repeat_password and strlen($Password != 0) and strpos($Password, " ") !== true){
+	if ($Password == $repeat_password and strlen($Password != 0)){
 		$result = mysqli_query($connect,$query)
 		or die(" insert into database unsuccessfull ");
 		header('Refresh:3, url=browse.php'); //add sessions later.
