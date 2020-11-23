@@ -30,7 +30,7 @@
   <div class="form-group row">
     <label for="password" class="col-sm-2 col-form-label text-right">Password</label>
     <div class="col-sm-10">
-      <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+      <input type="password" name="password" class="form-control" id="password" placeholder="Password: minimum 5 characters">
       <small id="passwordHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
     </div>
   </div>
