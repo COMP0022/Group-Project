@@ -31,7 +31,7 @@ $accounttype = $_POST['accountType'];
 
 //Creating insert code to insert registration into user table of testdb database
 
-$query = "INSERT INTO users (email, password) VALUES ('$email', '$Password')";
+$query = "INSERT INTO users (email, password) VALUES ('$email', SHA('$Password'))";
 $buyerquery = "INSERT INTO buyers (user_id) SELECT (id) FROM users WHERE email = '$email'";
 $sellerquery = "INSERT INTO sellers (user_id) SELECT (id) FROM users WHERE email = '$email'";
 $emailquery = ("SELECT * FROM users WHERE email = '$email'");
