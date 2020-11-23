@@ -29,7 +29,7 @@ if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer')
 	$buyer_userid = $_SESSION['buyer_id'];
 }
 
-	$recco_listing_query = "SELECT * FROM listings WHERE listing_id IN(
+	$recco_listing_query = "SELECT * FROM listings WHERE finished is NULL AND listing_id IN(
 								SELECT DISTINCT listing_id FROM bids WHERE buyer_id IN(
 									SELECT buyer_id FROM bids WHERE listing_id IN(
 										SELECT listing_id FROM bids WHERE buyer_id = $buyer_userid)
