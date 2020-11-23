@@ -5,13 +5,13 @@
 
 	// Get info from the URL:
   $item_id = $_GET['item_id'];
-  $query = "SELECT * FROM listings WHERE listing_id = '$item_id'";
+  $listing_query = "SELECT * FROM listings WHERE listing_id = '$item_id'";
   
   $_SESSION['bided_item_id'] = $item_id; // Add the viewed item id into session info.
   
 	//Use item_id to make a query to the database.
 	include 'opendb.php';
-	$result = mysqli_query($connection, $query)
+	$result = mysqli_query($connection, $listing_query)
 	or die('Error making select users query');
 	
 	$row = mysqli_fetch_array($result);
@@ -60,19 +60,32 @@
 		$time_remaining = ' (in ' . display_time_remaining($time_to_end) . ')';
 	}
 	
-	// TODO: If the user has a session, use it to make a query to the database
-	//			 to determine if the user is already watching this item.
-	//			 For now, this is hardcoded.
 	if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) 
 	{
 		$has_session = true;
+		$user_id = $_SESSION['user_id'];
+		$watch_check_query = "SELECT * FROM watchlist WHERE user_id = $user_id AND listing_id = $item_id";
+		$watch_check_result = mysqli_query($connection, $watch_check_query)
+			or die('Error making watch check query');	
+		
+		$watch_bool = mysqli_fetch_array($watch_check_result);
+		if ($watch_bool == "") {
+			$watching = false;
+		}
+		else {
+			$watching = true;
+		}
 	}
 	else 
 	{
 		$has_session = false;
+		$watching = false;
 	}
-	$watching = false;
+	
+
+
 ?>
+
 
 <div class="container">
 
@@ -141,6 +154,7 @@
 <script> 
 // JavaScript functions: addToWatchlist and removeFromWatchlist.
 
+
 function addToWatchlist(button) {
   console.log("These print statements are helpful for debugging btw");
 
@@ -149,13 +163,13 @@ function addToWatchlist(button) {
   $.ajax('watchlist_funcs.php', {
     type: "POST",
     data: {functionname: 'add_to_watchlist', arguments: [<?php echo($item_id);?>]},
-
+	
     success: 
       function (obj, textstatus) {
         // Callback function for when call is successful and returns obj
         console.log("Success");
         var objT = obj.trim();
- 
+		console.log(objT);
         if (objT == "success") {
           $("#watch_nowatch").hide();
           $("#watch_watching").show();

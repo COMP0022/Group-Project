@@ -226,6 +226,7 @@ if ($num_results < 1) {
 
 <?php
 	//Get results of $query_ordered so we can print to user
+
 	$result = mysqli_query($connection, $query_ordered)
 		or die('Error making select users query');
 	
