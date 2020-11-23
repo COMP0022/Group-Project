@@ -1,4 +1,4 @@
-recommendations.php<?php include_once("header.php")?>
+<?php include_once("header.php")?>
 <?php require("utilities.php")?>
 <?php include 'opendb.php'?>
 <div class="container">
