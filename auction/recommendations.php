@@ -29,19 +29,19 @@ if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer')
 	$buyer_userid = $_SESSION['buyer_id'];
 }
 
-	$recco_listing_query = "SELECT * FROM listings WHERE listing_id IN(
+	$recco_listing_query = "SELECT * FROM listings WHERE finished is NULL AND listing_id IN(
 								SELECT DISTINCT listing_id FROM bids WHERE buyer_id IN(
 									SELECT buyer_id FROM bids WHERE listing_id IN(
-										SELECT listing_id FROM bids WHERE buyer_id = $buyer_userid) 
+										SELECT listing_id FROM bids WHERE buyer_id = $buyer_userid)
 									AND buyer_id != $buyer_userid)
 							AND listing_id NOT IN(SELECT listing_id FROM bids WHERE buyer_id = $buyer_userid)) LIMIT $results_per_page";
-	
+
 	$num_recco_query = "SELECT COUNT(DISTINCT listing_id) FROM bids WHERE buyer_id IN(
 							SELECT buyer_id FROM bids WHERE listing_id IN(
-								SELECT listing_id FROM bids WHERE buyer_id = $buyer_userid) 
+								SELECT listing_id FROM bids WHERE buyer_id = $buyer_userid)
 							AND buyer_id != $buyer_userid)
 						AND listing_id NOT IN(SELECT listing_id FROM bids WHERE buyer_id = $buyer_userid)";
-	
+
 	$num_recco_result = mysqli_query($connection, $num_recco_query)
 			or die('Error making recco count query');
 
@@ -59,7 +59,7 @@ if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer')
 		}
 	else
 	{
-		if ($_GET['page'] == 1) 
+		if ($_GET['page'] == 1)
 		{
 			$curr_page = 1;
 		}
@@ -68,7 +68,7 @@ if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer')
 			//This limits the number of answers per page to $results_per_page, and ensures not the same 'x' results are printed on each page using SQL 'offset'
 			$curr_page = $_GET['page'];
 			$offset = ($curr_page*$results_per_page)-$results_per_page;
-			$recco_listing_query .= " OFFSET $offset"; 
+			$recco_listing_query .= " OFFSET $offset";
 
 		}
 	}
@@ -78,11 +78,11 @@ if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer')
 
 <?php
 if ($row[0]  < 1) {
-		echo ("Sorry, either you have not made any bids, or other users who have a similar bid history have not bid on anything you have not bid on. <br><br> 
-		
+		echo ("Sorry, either you have not made any bids, or other users who have a similar bid history have not bid on anything you have not bid on. <br><br>
+
 		As such, we have no reccomendations right now! Check again soon!");
 	}
-?> 
+?>
 
 
 <ul class="list-group">
@@ -92,17 +92,17 @@ if ($row[0]  < 1) {
 	//Get results of $query_ordered so we can print to user
 	$result = mysqli_query($connection, $recco_listing_query)
 		or die('Error making recco select id query');
-	
+
 	while ($row = mysqli_fetch_array($result))
-	{	
+	{
 		//Count the number of bids
 		$count_bid_query = "SELECT COUNT(*) FROM bids WHERE listing_id = {$row['listing_id']}";
-		
+
 		$count_bid_result = mysqli_query($connection, $count_bid_query)
 			or die('Error making top bid query');
-		
+
 		$bid_count = mysqli_fetch_array($count_bid_result);
-		
+
 		//Use print listing function to print the listings. If not bids then show start price, else show highest bid
 		if ($bid_count[0] == 0) {
 			print_listing_li($row['listing_id'], $row['item_title'], $row['itemdescription'], $row['startprice'], $bid_count[0], date_create($row['endtime']));
@@ -110,16 +110,16 @@ if ($row[0]  < 1) {
 		else {
 
 			$top_bid_query = "SELECT MAX(bidprice) FROM bids WHERE listing_id = {$row['listing_id']}";
-			
+
 			$top_bid_result = mysqli_query($connection, $top_bid_query)
-				or die('Error making top bid query');	
-			
+				or die('Error making top bid query');
+
 			$top_bid = mysqli_fetch_array($top_bid_result);
-			
+
 			print_listing_li($row['listing_id'], $row['item_title'], $row['itemdescription'], $top_bid[0], $bid_count[0], date_create($row['endtime']));
-		
+
 		}
-	
+
 	}
 
 ?>
@@ -148,7 +148,7 @@ if ($row[0]  < 1) {
   if ($curr_page != 1) {
     echo('
     <li class="page-item">
-      <a class="page-link" href="browse.php?' . $querystring . 'page=' . ($curr_page - 1) . '" aria-label="Previous">
+      <a class="page-link" href="recommendations.php?' . $querystring . 'page=' . ($curr_page - 1) . '" aria-label="Previous">
         <span aria-hidden="true"><i class="fa fa-arrow-left"></i></span>
         <span class="sr-only">Previous</span>
       </a>
@@ -169,14 +169,14 @@ if ($row[0]  < 1) {
 
     // Do this in any case
     echo('
-      <a class="page-link" href="browse.php?' . $querystring . 'page=' . $i . '">' . $i . '</a>
+      <a class="page-link" href="recommendations.php?' . $querystring . 'page=' . $i . '">' . $i . '</a>
     </li>');
   }
 
   if ($curr_page != $max_page) {
     echo('
     <li class="page-item">
-      <a class="page-link" href="browse.php?' . $querystring . 'page=' . ($curr_page + 1) . '" aria-label="Next">
+      <a class="page-link" href="recommendations.php?' . $querystring . 'page=' . ($curr_page + 1) . '" aria-label="Next">
         <span aria-hidden="true"><i class="fa fa-arrow-right"></i></span>
         <span class="sr-only">Next</span>
       </a>
