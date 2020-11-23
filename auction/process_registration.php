@@ -19,9 +19,6 @@ else{
 //defining POST variables
 $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
-
-
-
 $Password = $_POST['password'];
 $repeat_password = $_POST['passwordrepeat'];
 $accounttype = $_POST['accountType'];
@@ -48,7 +45,16 @@ if($emailcheck){
 }
 else{
 if (filter_var($email, FILTER_VALIDATE_EMAIL)){
-	if ($Password == $repeat_password and strlen($Password) > 0 and strpos($Password, " ") !== true){
+	if ($Password != $repeat_password){
+		echo " Passwords do not match. ";
+	}
+	elseif (strlen($Password) < 5){
+		echo " Password must contain at least 5 characters. ";
+	}
+	elseif (strpos($Password, " ") !== false){
+		echo " Password must not contain white spaces. ";
+	}
+	else{
 		$result = mysqli_query($connect,$query)
 		or die(" insert into database unsuccessfull ");
 		header('Refresh:3, url=browse.php'); //add sessions later.
@@ -91,9 +97,7 @@ else{
 	header('Refresh:3; url=register.php'); //add sessions later.  
 }
 
-if ($Password != $repeat_password){
-	echo " Passwords do not match ";
-}
+
 mysqli_close($connect);
 	
 ?> 
