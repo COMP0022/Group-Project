@@ -14,7 +14,7 @@ $database_name = "testdb";
 $connect=mysqli_connect($servername, $username, $password, $database_name);
 	
 if($connect){
-	echo "connection success.";
+	
 }
 else{
 	echo "Connection failed.";
@@ -54,14 +54,20 @@ $seller_ID = $_SESSION['seller_id'];
 			*/
 $query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $seller_ID, '$Details', (SELECT catID FROM categories WHERE name = '$Category'), $Start_price, $Reserve_Price, '$End_Date')";
 
-echo $query;
 
 
+$newposttime = date("Y.m.d", strtotime($posttime));
+
+$newenddate = date("Y.m.d", strtotime($End_Date));
+
+
+if ($newenddate > $newposttime){
 $result = mysqli_query($connect,$query)
-	or die(" Error inserting auction details");
-
-	
-	
+	or die(" Error inserting auction details. ");
+}
+else{
+	echo " Auction end time must be in the future. ";
+}
 
 	
 	               
@@ -71,7 +77,7 @@ if ($result){
 	echo('<div class="text-center">Auction successfully created! <a href="mylistings.php">View your new listing.</a></div>');
 }
 else{
-	echo "make sure to check data types and try again"; //just a filler return statement for now while testing
+	echo "Make sure to check data types and try again"; //just a filler return statement for now while testing
 }
 
 
