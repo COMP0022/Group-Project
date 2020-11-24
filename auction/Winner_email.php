@@ -14,13 +14,13 @@ INNER JOIN users AS u
 ON
     bu.user_id = u.id
 WHERE
-    listing_id = 5 AND bidprice IN(
+    listing_id = $item_id AND bidprice IN(
     SELECT
         MAX(bidprice)
     FROM
         bids
     WHERE
-        listing_id = 5)"
+        listing_id = $item_id)"
 
 
 $listing_title_query = "SELECT item_title FROM listings WHERE listing_id = $item_id";
