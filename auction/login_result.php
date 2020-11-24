@@ -11,7 +11,7 @@ $input_email = $_POST['email'];
 $input_password = $_POST['password'];                           // Retreive the form input from header.php
 
 include_once 'opendb.php'; 
-$check_query = "SELECT * FROM users WHERE email='$input_email' AND password='$input_password';";
+$check_query = "SELECT * FROM users WHERE email='$input_email' AND password=SHA('$input_password');";
 $check_result = mysqli_query($connection,$check_query);
 $check = mysqli_fetch_array($check_result);                     // Make query to the database and fetch stored user information
 

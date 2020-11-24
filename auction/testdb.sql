@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 18, 2020 at 11:33 AM
+-- Generation Time: Nov 24, 2020 at 11:03 AM
 -- Server version: 5.7.31
 -- PHP Version: 7.3.21
 
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `buyers` (
   `buyer_id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`buyer_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `buyers`
@@ -87,7 +87,8 @@ CREATE TABLE IF NOT EXISTS `buyers` (
 INSERT INTO `buyers` (`user_id`, `buyer_id`) VALUES
 (1, 1),
 (2, 2),
-(3, 3);
+(3, 3),
+(6, 4);
 
 -- --------------------------------------------------------
 
@@ -154,20 +155,20 @@ CREATE TABLE IF NOT EXISTS `listings` (
 --
 
 INSERT INTO `listings` (`listing_id`, `seller_id`, `posttime`, `endtime`, `itemdescription`, `item_title`, `finished`, `category`, `reserveprice`, `startprice`) VALUES
-(1, 1, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Brand new car', NULL, 'Car', '15000.00', '10000.00'),
-(2, 1, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Vintage ECC83 Pre Amp /Summing Mixer', NULL, 'Music', '1000.00', '750.00'),
-(3, 2, '2020-11-18 11:32:58', '2020-11-22 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Natuzzi \"Love Seat\"', NULL, 'Furniture', '350.00', '300.00'),
-(4, 2, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'British Eagle Hybrid Bicycle - Medium', NULL, 'Bicycle', '100.00', '75.00'),
-(5, 2, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'IKEA mahogany slim bookshelf, wooden, 178 x 52 x 40 cm', NULL, 'Bookshelf', '20.00', '14.00'),
-(6, 3, '2020-11-18 11:32:58', '2020-11-24 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Huawei watch 2 sports black excellent condition rarely worn with box and all accessories', NULL, 'Clothes', '150.00', '120.00'),
-(7, 3, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Apple EarPods with 3.5mm Headphone Plug', NULL, 'Technology', '15.00', '10.00'),
-(8, 3, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Solid Wood side tables x 2', NULL, 'Furniture', '20.00', '15.00'),
-(9, 4, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'ASKVOLL Wardrobe, white stained oak effect, white - white stained oak effect/white', NULL, 'Furniture', '60.00', '50.00'),
-(10, 5, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Large TV Media Storage Unit.TV Stand. Fits Up To 55 inch TV. (Light Oak)', NULL, 'Technology', '50.00', '45.00'),
-(11, 4, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Coffee Table', NULL, 'Furniture', '45.00', '30.00'),
+(1, 1, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Brand new car', b'1', 'Car', '15000.00', '10000.00'),
+(2, 1, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Vintage ECC83 Pre Amp /Summing Mixer', b'1', 'Music', '1000.00', '750.00'),
+(3, 2, '2020-11-18 11:32:58', '2020-11-22 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Natuzzi \"Love Seat\"', b'1', 'Furniture', '350.00', '300.00'),
+(4, 2, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'British Eagle Hybrid Bicycle - Medium', b'1', 'Bicycle', '100.00', '75.00'),
+(5, 2, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'IKEA mahogany slim bookshelf, wooden, 178 x 52 x 40 cm', b'1', 'Bookshelf', '20.00', '14.00'),
+(6, 3, '2020-11-18 11:32:58', '2020-11-24 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Huawei watch 2 sports black excellent condition rarely worn with box and all accessories', b'1', 'Clothes', '150.00', '120.00'),
+(7, 3, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Apple EarPods with 3.5mm Headphone Plug', b'1', 'Technology', '15.00', '10.00'),
+(8, 3, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Solid Wood side tables x 2', b'1', 'Furniture', '20.00', '15.00'),
+(9, 4, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'ASKVOLL Wardrobe, white stained oak effect, white - white stained oak effect/white', b'1', 'Furniture', '60.00', '50.00'),
+(10, 5, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Large TV Media Storage Unit.TV Stand. Fits Up To 55 inch TV. (Light Oak)', b'1', 'Technology', '50.00', '45.00'),
+(11, 4, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Coffee Table', b'1', 'Furniture', '45.00', '30.00'),
 (12, 5, '2020-11-18 11:32:58', '2020-11-25 11:32:58', 'Lorem Ipsum Lorem Ipsum', '* BOARDMAN HYB 8.6 * HYBRID / ROAD BIKE / BICYCLE', NULL, 'Bicycle', '295.00', '250.00'),
-(13, 4, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Single metal white loft bed', NULL, 'Furniture', '60.00', '50.00'),
-(14, 5, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Apple iMac Slim 27 inch i5 Quad Core 2.9Ghz 24gb Ram 1TB HDD Cinema 4D Vectorworks Adobe Dimension', NULL, 'Technology', '900.00', '850.00');
+(13, 4, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Single metal white loft bed', b'1', 'Furniture', '60.00', '50.00'),
+(14, 5, '2020-11-18 11:32:58', '2020-11-21 11:32:58', 'Lorem Ipsum Lorem Ipsum', 'Apple iMac Slim 27 inch i5 Quad Core 2.9Ghz 24gb Ram 1TB HDD Cinema 4D Vectorworks Adobe Dimension', b'1', 'Technology', '900.00', '850.00');
 
 -- --------------------------------------------------------
 
@@ -204,9 +205,9 @@ DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` text,
-  `password` text,
+  `password` varchar(40) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `users`
@@ -217,7 +218,8 @@ INSERT INTO `users` (`id`, `email`, `password`) VALUES
 (2, 'test2@test.com', 'abc'),
 (3, 'test3@test.com', 'abc'),
 (4, 'test4@test.com', 'abc'),
-(5, 'test5@test.com', 'abc');
+(5, 'test5@test.com', 'abc'),
+(6, 'test6@test.com', '03de6c570bfe24bfc328ccd7ca46b76eadaf4334');
 
 -- --------------------------------------------------------
 
@@ -232,6 +234,15 @@ CREATE TABLE IF NOT EXISTS `watchlist` (
   KEY `user_id` (`user_id`),
   KEY `listing_id` (`listing_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+DELIMITER $$
+--
+-- Events
+--
+DROP EVENT `check_finished`$$
+CREATE DEFINER=`COMP0022`@`localhost` EVENT `check_finished` ON SCHEDULE EVERY 1 HOUR STARTS '2020-11-24 00:00:00' ON COMPLETION NOT PRESERVE ENABLE DO UPDATE listings SET finished = 1 WHERE NOW() > endtime$$
+
+DELIMITER ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
