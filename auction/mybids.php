@@ -329,6 +329,5 @@ if ($num_results < 1) {
 
 
 
-<?php include_once("footer.php")?>
 
 <?php include_once("footer.php")?>
