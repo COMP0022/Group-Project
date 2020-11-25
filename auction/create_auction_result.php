@@ -56,26 +56,41 @@ $Catquery = "(SELECT catID FROM categories WHERE name = '$Category')";
 
 $query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $seller_ID, '$Details', $Catquery, $Start_price, $Reserve_Price, '$End_Date')";
 
-echo $query;
-
-$newposttime = date("Y.m.d", strtotime($posttime));
-
-$newenddate = date("Y.m.d", strtotime($End_Date));
+$reservequery = $query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $seller_ID, '$Details', $Catquery, $Start_price, NULL, '$End_Date')";
 
 
-if ($newenddate >= $newposttime){
+
+$newposttime = date("Y.mdHis", strtotime($posttime));
+
+$newenddate = date("Y.mdHis", strtotime($End_Date));
+
+
+
+if ($newenddate <= $newposttime){
+	echo " Auction end time must be in the future. ";
+}
+elseif ($newenddate > ($newposttime + 1)){
+	echo " Cannot create auction more than a year in advance. ";
+	}
+elseif(empty($Reserve_Price)){
+	$result1 = mysqli_query($connect, $reservequery);
+	}
+elseif ($Reserve_Price <= 0 or 0 <= $Reserve_Price and $Reserve_Price < $Start_price){
+	echo " Reserve price must be greater than or equal to start price. ";
+}
+
+else{
 $result = mysqli_query($connect,$query)
 	or die(" Error inserting auction details. ");
 }
-else{
-	echo " Auction end time must be in the future. ";
-}
+
+
 
 	
 	               
 
 // If all is successful, let user know.
-if ($result){
+if ($result or $result1){
 	echo('<div class="text-center">Auction successfully created! <a href="mylistings.php">View your new listing.</a></div>');
 }
 else{
