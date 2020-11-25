@@ -63,7 +63,7 @@ $newposttime = date("Y.m.d", strtotime($posttime));
 $newenddate = date("Y.m.d", strtotime($End_Date));
 
 
-if ($newenddate > $newposttime){
+if ($newenddate >= $newposttime){
 $result = mysqli_query($connect,$query)
 	or die(" Error inserting auction details. ");
 }
