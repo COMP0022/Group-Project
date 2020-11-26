@@ -1,9 +1,19 @@
 <?php
-// $winner_email_query = "SELECT email FROM users WHERE id IN(
-//     SELECT user_id FROM buyers WHERE buyer_id IN(
-//         SELECT buyer_id FROM bids WHERE bid_id IN(
-//             SELECT bid_id FROM bids WHERE listing_id = 1 AND bidprice IN(
-//                 SELECT MAX(bidprice) as bidprice FROM bids WHERE listing_id = $item_id))))";
+
+include_once 'opendb.php';
+
+date_default_timezone_set("Europe/London");
+$now_time = date("Y-m-d H:i:s");
+
+$notification_query = "SELECT * FROM listings WHERE notified=0 AND endtime<'$now_time'";
+
+$notification_result = mysqli_query($connection, $notification_query)
+or die('Error making notification query');
+
+while ($notification_item = mysqli_fetch_array($notification_result)) 
+{
+
+$item_id = $notification_item[0];
 
 $winner_email_query = "SELECT
     email
@@ -20,7 +30,7 @@ WHERE
     FROM
         bids
     WHERE
-        listing_id = $item_id)"
+        listing_id = $item_id)";
 
 
 $listing_title_query = "SELECT item_title FROM listings WHERE listing_id = $item_id";
@@ -64,5 +74,7 @@ $mail_body = "Congratulations! Your listing called '$listing_title[0]' has now f
 $subject = "Auction finished"; //subject
 $header = "From: ". $name ." <" . $email .">\r\n"; //optional headerfields
 mail($recipient,$subject,$mail_body,$header); //mail function
+
+}
 
 ?>
