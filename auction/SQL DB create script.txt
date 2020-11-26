@@ -46,3 +46,5 @@ FOREIGN KEY(listing_id) REFERENCES listings(listing_id));
 CREATE TABLE categories (catID VARCHAR(10), 
 name TINYTEXT, 
 PRIMARY KEY(catID));
+
+ALTER TABLE `listings` ADD `notified` BOOLEAN NOT NULL DEFAULT FALSE AFTER `startprice`;
