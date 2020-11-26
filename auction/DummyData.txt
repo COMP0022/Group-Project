@@ -52,7 +52,7 @@ VALUES
 ('2' , '5' , CURRENT_TIMESTAMP() , '300' , NULL);
 
 INSERT INTO categories 
-VALUES ('CAT001', 'Home & Garden'),
+VALUES ('CAT001', 'Home'),
 ('CAT002', 'Clothes'),
 ('CAT003', 'Kids'),
 ('CAT004', 'Sports'),
