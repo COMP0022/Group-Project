@@ -68,156 +68,176 @@ if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'seller')
 $seller_userid = $_SESSION['seller_id'];
 
 
-	// Retrieve these from the URL
-	$results_per_page = 5;
-	if (!isset($_GET['keyword']))
-	{
-		 $query = "SELECT DISTINCT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
-FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL AND seller_id = $seller_userid";
-	}
+$results_per_page = 5;
 
-	else
-	{
-		$keyword = $_GET['keyword'];
-
-		if ($keyword == '')
-		{
-			 $query = "SELECT DISTINCT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
+// Checks if Keyword exists
+if (!isset($_GET['keyword']))
+{
+   $query = "SELECT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL AND seller_id = $seller_userid";
-		}
-		else
-		{
-			 $query = "SELECT DISTINCT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, bids.bidprice, listings.startprice, listings.endtime
+}
+
+else
+{
+  // Sets keyword Variable
+  $keyword = $_GET['keyword'];
+
+  // Checks if Keyword is blank
+  if ($keyword == '')
+  {
+     $query = "SELECT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
+FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL AND seller_id = $seller_userid";
+  }
+  else
+  {
+     $query = "SELECT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title LIKE '%$keyword%' AND seller_id = $seller_userid";
-		}
-	}
+  }
+}
+}
 
-	if (!isset($_GET['cat']))
+// Checks if category exists
+if (!isset($_GET['cat']))
+{
+	 $query .= " AND category IS NOT NULL";
+}
+
+else
+{
+	$category = $_GET['cat'];
+
+	if ($category == "all")
 	{
 		 $query .= " AND category IS NOT NULL";
 	}
-
 	else
 	{
-		$category = $_GET['cat'];
-		if ($category = "all")
-		{
-			 $query .= " AND category IS NOT NULL";
-		}
-		else
-		{
-			 $query .= " AND category = '$category'";
-		}
-	}
-
-	if (!isset($_GET['order_by']))
-	{
-	// TODO: Define behavior if an order_by value has not been specified.
-		$query_ordered = $query . " ORDER BY listings.endtime LIMIT $results_per_page";
-
-	}
-	else
-	{
-		$order_by = $_GET['order_by'];
-		if ($order_by == '')
-		{
-			$query_ordered = $query . " ORDER BY (CASE
-			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP)
-			ELSE TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)
-			END) LIMIT $results_per_page";
-		}
-
-		if ($order_by == 'date')
-		{
-			$query_ordered = $query . " ORDER BY (CASE
-			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP)
-			ELSE TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)
-			END) LIMIT $results_per_page";
-
-		}
-
-		if ($order_by == 'pricelow')
-		{
-			$query_ordered = $query . " ORDER BY (CASE
-			WHEN bids.bidprice IS NULL THEN listings.startprice
-			ELSE bids.bidprice
-			END) LIMIT $results_per_page";
-		}
-		if ($order_by == 'pricehigh')
-		{
-			$query_ordered = $query . " ORDER BY (CASE
-			WHEN bids.bidprice IS NULL THEN listings.startprice
-			ELSE bids.bidprice
-			END) DESC LIMIT $results_per_page";
-		}
-
+		 $query .= " AND category LIKE '%$category%'";
 	}
 }
 
-
-	$update_query = "UPDATE listings SET finished = 1 WHERE CURRENT_TIMESTAMP - endtime > 0";
-	$update_result = mysqli_query($connection, $update_query)
-			or die('Error updating table');
-
-
-	$tmp = explode(" ",$query);
-	$tmp[1] = "COUNT(DISTINCT listings.listing_id)";
-	$tmp[2] = "";
-	$tmp[3] = "";
-	$tmp[4] = "";
-	$tmp[5] = "";
-	$tmp[6] = "";
-	$tmp[7] = "";
-	$tmp[8] = "FROM ";
+// Checks if 'order by' exists
+if (!isset($_GET['order_by']))
+{
+	// At this point we divide our SQL queries into two. $query will be used to count the number of listings for pagination
+	// $query_ordered will be used to pull the actual listings in the correct order. $query_ordered is what is outputted to screen later
+	$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE
+		WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP)
+		ELSE ADDTIME((TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)),\"10000:0:0\")
+		END) LIMIT $results_per_page";
 
 
-	$num_query = implode(" ",$tmp);
-	$num_result = mysqli_query($connection, $num_query)
-			or die('Error making count query');
+}
+else
+{
+	$order_by = $_GET['order_by'];
+	if ($order_by == '')
+	{
 
-	$row = mysqli_fetch_array($num_result);
+		$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE
+		WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP)
+		ELSE ADDTIME((TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)),\"10000:0:0\")
+		END) LIMIT $results_per_page";
+	}
 
-	$num_results = $row[0];
+	if ($order_by == 'date')
+	{
+		$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE
+		WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP)
+		ELSE ADDTIME((TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)),\"10000:0:0\")
+		END) LIMIT $results_per_page";
 
+	}
+
+	if ($order_by == 'pricelow')
+	{
+		$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE
+		WHEN MAX(bids.bidprice) IS NULL THEN listings.startprice
+		ELSE MAX(bids.bidprice)
+		END) LIMIT $results_per_page";
+	}
+	if ($order_by == 'pricehigh')
+	{
+		$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE
+		WHEN MAX(bids.bidprice) IS NULL THEN listings.startprice
+		ELSE MAX(bids.bidprice)
+		END) DESC LIMIT $results_per_page";
+	}
+
+}
+
+
+// This sets an item to finished if it is finished - but we could actually do the same with a scheduled event
+$update_query = "UPDATE listings SET finished = 1 WHERE CURRENT_TIMESTAMP - endtime > 0";
+$update_result = mysqli_query($connection, $update_query)
+		or die('Error updating table');
+
+// Here we divide $query into an array so we can remove columns and return the COUNT of listings for pagination
+$tmp = explode(" ",$query);
+$tmp[1] = "COUNT(DISTINCT listings.listing_id)";
+$tmp[2] = "";
+$tmp[3] = "";
+$tmp[4] = "";
+$tmp[5] = "";
+$tmp[6] = "";
+$tmp[7] = "FROM ";
+
+// $num_query introduced. Turn $tmp array into a string. Like $query but uses SQL 'COUNT'
+$num_query = implode(" ",$tmp);
+$num_result = mysqli_query($connection, $num_query)
+		or die('Error making count query');
+
+$row = mysqli_fetch_array($num_result);
+
+$num_results = $row[0];
+
+if ($num_results < 1) {
+	$max_page = 1;
+}
+else {
 	$max_page = ceil($num_results / $results_per_page);
-	if (!isset($_GET['page']))
-		{
+}
+if (!isset($_GET['page']))
+	{
+	$curr_page = 1;
+	}
+else
+{
+	if ($_GET['page'] == 1)
+	{
 		$curr_page = 1;
-		}
+	}
 	else
 	{
-		if ($_GET['page'] == 1)
-		{
-			$curr_page = 1;
-		}
-		else
-		{
-			$curr_page = $_GET['page'];
-			$offset = ($curr_page*$results_per_page)-$results_per_page;
-			$query_ordered .= " OFFSET $offset";
+		//This limits the number of answers per page to $results_per_page, and ensures not the same 'x' results are printed on each page using SQL 'offset'
+		$curr_page = $_GET['page'];
+		$offset = ($curr_page*$results_per_page)-$results_per_page;
+		$query_ordered .= " OFFSET $offset";
 
-		}
 	}
+}
 ?>
 
 <div class="container mt-5">
 
-<!-- TODO: If result set is empty, print an informative message. Otherwise... -->
-
+<?php
+if ($num_results < 1) {
+	echo ("Sorry, your search didn't yield any results! Perhaps try again with a different keyword or category...");
+}
+?>
 
 <ul class="list-group">
 
 
 <?php
-
+	//Get results of $query_ordered so we can print to user
 
 	$result = mysqli_query($connection, $query_ordered)
 		or die('Error making select users query');
 
-
 	while ($row = mysqli_fetch_array($result))
 	{
-
+		//Count the number of bids
 		$count_bid_query = "SELECT COUNT(*) FROM bids WHERE listing_id = {$row['listing_id']}";
 
 		$count_bid_result = mysqli_query($connection, $count_bid_query)
@@ -225,18 +245,13 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 
 		$bid_count = mysqli_fetch_array($count_bid_result);
 
+		//Use print listing function to print the listings. If not bids then show start price, else show highest bid
 		if ($bid_count[0] == 0) {
 			print_listing_li($row['listing_id'], $row['item_title'], $row['itemdescription'], $row['startprice'], $bid_count[0], date_create($row['endtime']));
 		}
 		else {
-			$top_bid_query = "SELECT MAX(bidprice) FROM bids WHERE listing_id = {$row['listing_id']}";
 
-			$top_bid_result = mysqli_query($connection, $top_bid_query)
-				or die('Error making top bid query');
-
-			$top_bid = mysqli_fetch_array($top_bid_result);
-
-			print_listing_li($row['listing_id'], $row['item_title'], $row['itemdescription'], $top_bid[0], $bid_count[0], date_create($row['endtime']));
+			print_listing_li($row['listing_id'], $row['item_title'], $row['itemdescription'], $row['MAX(bids.bidprice)'], $bid_count[0], date_create($row['endtime']));
 
 		}
 

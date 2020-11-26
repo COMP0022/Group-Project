@@ -64,8 +64,9 @@ else{
 	echo " Email or password is not valid. ";
 }
 }
-/*only inserting data if the password and password repeat match. 
-noting to user that information did not insert */
+/*only inserting data if the password and password repeat match, password contains not whitespaces,
+password is at least 5 characters, and email is valid/available.
+noting to user that information did not insert*/
 
 
 
@@ -86,7 +87,7 @@ if (isset($result)){
 
 
 
-// telling user if their passwords do not match
+// telling user they registered successfully and returning the email.  
 
 if (isset($result))
 {
