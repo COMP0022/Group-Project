@@ -70,7 +70,7 @@
 // Checks if Keyword exists 
 	if (!isset($_GET['keyword']))
 	{
-		 $query = "SELECT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
+		 $query = "SELECT listings.listing_id, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL";
 	}
 
@@ -82,12 +82,12 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		// Checks if Keyword is blank
 		if ($keyword == '')
 		{
-			 $query = "SELECT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
+			 $query = "SELECT listings.listing_id, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL";
 		}
 		else
 		{
-			 $query = "SELECT listings.listing_id, listings.finished, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
+			 $query = "SELECT listings.listing_id, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title LIKE '%$keyword%'";
 		}
 	}
@@ -116,7 +116,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		// At this point we divide our SQL queries into two. $query will be used to count the number of listings for pagination
 		// $query_ordered will be used to pull the actual listings in the correct order. $query_ordered is what is outputted to screen later
 		$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE 
-			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
+			WHEN (listings.endtime > CURRENT_TIMESTAMP) THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
 			ELSE ADDTIME((TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)),\"10000:0:0\") 
 			END) LIMIT $results_per_page";
 		
@@ -129,7 +129,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		{
 			
 			$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE 
-			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
+			WHEN (listings.endtime > CURRENT_TIMESTAMP) THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
 			ELSE ADDTIME((TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)),\"10000:0:0\") 
 			END) LIMIT $results_per_page";
 		}
@@ -137,7 +137,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		if ($order_by == 'date')
 		{
 			$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE 
-			WHEN listings.finished IS NULL THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
+			WHEN (listings.endtime > CURRENT_TIMESTAMP) THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
 			ELSE ADDTIME((TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)),\"10000:0:0\") 
 			END) LIMIT $results_per_page";
 	
@@ -173,10 +173,10 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 	$tmp[3] = "";
 	$tmp[4] = "";
 	$tmp[5] = "";
-	$tmp[6] = "";
-	$tmp[7] = "FROM ";
+	$tmp[6] = "FROM ";
 
 	// $num_query introduced. Turn $tmp array into a string. Like $query but uses SQL 'COUNT'
+	
 	$num_query = implode(" ",$tmp);
 	$num_result = mysqli_query($connection, $num_query)
 			or die('Error making count query');
@@ -226,7 +226,6 @@ if ($num_results < 1) {
 
 <?php
 	//Get results of $query_ordered so we can print to user
-
 	$result = mysqli_query($connection, $query_ordered)
 		or die('Error making select users query');
 	
