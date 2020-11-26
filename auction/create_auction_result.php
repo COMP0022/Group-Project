@@ -64,14 +64,22 @@ $newposttime = date("Y.mdHis", strtotime($posttime));
 
 $newenddate = date("Y.mdHis", strtotime($End_Date));
 
+if (empty($End_Date)){
+	echo " Auction must have an end date. ";
+}
 
-
-if ($newenddate <= $newposttime){
-	echo " Auction end time must be in the future. ";
+elseif($newenddate <= $newposttime){
+	echo " Auction end time must be later than current time. ";
 }
 elseif ($newenddate > ($newposttime + 1)){
 	echo " Cannot create auction more than a year in advance. ";
 	}
+elseif(empty($Title)){
+	echo " Auction must have a title name.  ";
+}
+elseif(empty($Start_price)){
+	echo " Auction must have a start price. ";
+}
 elseif(empty($Reserve_Price)){
 	$result1 = mysqli_query($connect, $reservequery);
 	}
