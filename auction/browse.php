@@ -173,10 +173,10 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 	$tmp[3] = "";
 	$tmp[4] = "";
 	$tmp[5] = "";
-	$tmp[6] = "";
-	$tmp[7] = "FROM ";
+	$tmp[6] = "FROM ";
 
 	// $num_query introduced. Turn $tmp array into a string. Like $query but uses SQL 'COUNT'
+	
 	$num_query = implode(" ",$tmp);
 	$num_result = mysqli_query($connection, $num_query)
 			or die('Error making count query');
