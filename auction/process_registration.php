@@ -71,7 +71,7 @@ noting to user that information did not insert */
 
 //if user registers as buyer then insert id into buyers table...auto incrementing buyer id
 
-if ($result){
+if (isset($result)){
 	if ($accounttype == "buyer"){
 		$buyerresult = mysqli_query($connect, $buyerquery);
 }
@@ -88,7 +88,7 @@ if ($result){
 
 // telling user if their passwords do not match
 
-if ($result)
+if (isset($result))
 {
 	echo " Registered successfully. Registered with email: $email ";
 }

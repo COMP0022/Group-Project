@@ -1,4 +1,7 @@
 <?php
+
+$item_id = 1;  // for trial
+
 $winner_email_query = "SELECT email FROM users WHERE id IN(
     SELECT user_id FROM buyers WHERE buyer_id IN(
         SELECT buyer_id FROM bids WHERE bid_id IN(
@@ -6,6 +9,8 @@ $winner_email_query = "SELECT email FROM users WHERE id IN(
                 SELECT MAX(bidprice) as bidprice FROM bids WHERE listing_id = $item_id))))";
 
 $listing_title_query = "SELECT item_title FROM listings WHERE listing_id = $item_id";
+
+include_once 'opendb.php';
 
 $winner_result = mysqli_query($connection, $winner_email_query)
 	or die('Error making winner email query');
