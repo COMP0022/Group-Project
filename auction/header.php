@@ -30,10 +30,9 @@
 
 <!-- Navbars -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mx-2">
-  <a class="navbar-brand" href="#"><font size = '14' color = 'black'>Happy Auction House</font></a>
+  <a class="navbar-brand" href="#"><font size = "+3" color = "black">Happy Auction House</font></a>
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
-
 <?php
   // Displays either login or logout on the right, depending on user's
   // current status (session).
