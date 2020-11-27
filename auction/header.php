@@ -22,7 +22,7 @@
   <!-- Custom CSS file -->
   <link rel="stylesheet" href="css/custom.css">
 
-  <title>[My Auction Site] <!--CHANGEME!--></title>
+  <title>Happy Auction House</title>
 </head>
 
 
@@ -30,10 +30,9 @@
 
 <!-- Navbars -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mx-2">
-  <a class="navbar-brand" href="#">Site Name <!--CHANGEME!--></a>
+  <a class="navbar-brand" href="#"><font size = "+3" color = "black">Happy Auction House</font></a>
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
-
 <?php
   // Displays either login or logout on the right, depending on user's
   // current status (session).
