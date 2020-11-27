@@ -26,22 +26,22 @@ $results_per_page = 5;
 
 if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer')
 {
-	$buyer_userid = $_SESSION['buyer_id'];
+	$user_id = $_SESSION['user_id'];
 }
 
 	$recco_listing_query = "SELECT * FROM listings WHERE (CURRENT_TIMESTAMP>endtime) AND listing_id IN(
-								SELECT DISTINCT listing_id FROM bids WHERE buyer_id IN(
-									SELECT buyer_id FROM bids WHERE listing_id IN(
-										SELECT listing_id FROM bids WHERE buyer_id = $buyer_userid)
-									AND buyer_id != $buyer_userid)
-							AND listing_id NOT IN(SELECT listing_id FROM bids WHERE buyer_id = $buyer_userid)) LIMIT $results_per_page";
+								SELECT DISTINCT listing_id FROM bids WHERE user_id IN(
+									SELECT user_id FROM bids WHERE listing_id IN(
+										SELECT listing_id FROM bids WHERE user_id = $user_id)
+									AND user_id != $user_id)
+							AND listing_id NOT IN(SELECT listing_id FROM bids WHERE user_id = $user_id)) LIMIT $results_per_page";
 							
 	$num_recco_query = "SELECT COUNT(*) FROM listings WHERE (CURRENT_TIMESTAMP>endtime) AND listing_id IN(
-								SELECT DISTINCT listing_id FROM bids WHERE buyer_id IN(
-									SELECT buyer_id FROM bids WHERE listing_id IN(
-										SELECT listing_id FROM bids WHERE buyer_id = $buyer_userid)
-									AND buyer_id != $buyer_userid)
-							AND listing_id NOT IN(SELECT listing_id FROM bids WHERE buyer_id = $buyer_userid))";
+								SELECT DISTINCT listing_id FROM bids WHERE user_id IN(
+									SELECT user_id FROM bids WHERE listing_id IN(
+										SELECT listing_id FROM bids WHERE user_id = $user_id)
+									AND user_id != $user_id)
+							AND listing_id NOT IN(SELECT listing_id FROM bids WHERE user_id = $user_id))";
 
 	$num_recco_result = mysqli_query($connection, $num_recco_query)
 			or die('Error making recco count query');

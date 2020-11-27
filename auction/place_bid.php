@@ -7,7 +7,7 @@ session_start();
 
 if ($_SESSION['logged_in'] == true && $_SESSION['account_type']=='buyer')  // Check if the user has loggin in as a buyer
 {
-
+	$user_id = $_SESSION['user_id'];
     $bid_price = $_POST['bid'];
     $buyer_id = $_SESSION['buyer_id'];  
     $item_id = $_SESSION['bided_item_id'];         

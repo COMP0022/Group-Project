@@ -6,7 +6,7 @@ $watchlist_result = mysqli_query($connection, $watchlist_email_query)
 	or die('Error making watchlist email query');
 
 // Gets the email of the person placing the bid
-$buyer_email_query = "SELECT email FROM users WHERE id IN(SELECT user_id FROM buyers WHERE buyer_id = $buyer_id)";
+$buyer_email_query = "SELECT email FROM users WHERE id= $user_id";
 $result = mysqli_query($connection, $buyer_email_query)
 	or die('Error making buyer email query');
 $buyer_email = mysqli_fetch_array($result);
@@ -19,8 +19,7 @@ $listing_title = mysqli_fetch_array($title_result);
 
 //Gets the email of the outbid buyer
 $outbid_query = "SELECT email FROM users WHERE id IN(
-					SELECT user_id FROM buyers WHERE buyer_id IN(
-						SELECT buyer_id FROM bids WHERE listing_id = $item_id AND bidprice = $previous_top_bid))";
+						SELECT user_id FROM bids WHERE listing_id = $item_id AND bidprice = $previous_top_bid)";
 $outbid_result = mysqli_query($connection, $outbid_query)
 	or die('Error making outbid email query');
 $outbid_email = mysqli_fetch_array($outbid_result);
