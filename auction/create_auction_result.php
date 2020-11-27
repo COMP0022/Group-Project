@@ -42,7 +42,7 @@ $posttime = $current;
 
 
 //session--login seller id inserted into listings table
-$seller_ID = $_SESSION['seller_id'];
+$user_id = $_SESSION['user_id'];
  
 
 
@@ -54,9 +54,9 @@ $seller_ID = $_SESSION['seller_id'];
 			*/
 $Catquery = "(SELECT catID FROM categories WHERE name = '$Category')";
 
-$query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $seller_ID, '$Details', $Catquery, $Start_price, $Reserve_Price, '$End_Date')";
+$query = "INSERT INTO listings (item_title, posttime, user_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $user_id, '$Details', $Catquery, $Start_price, $Reserve_Price, '$End_Date')";
 
-$reservequery = $query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $seller_ID, '$Details', $Catquery, $Start_price, NULL, '$End_Date')";
+$reservequery = $query = "INSERT INTO listings (item_title, posttime, user_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $user_id, '$Details', $Catquery, $Start_price, NULL, '$End_Date')";
 
 
 
