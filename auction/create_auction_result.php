@@ -56,8 +56,6 @@ $Catquery = "(SELECT catID FROM categories WHERE name = '$Category')";
 
 $query = "INSERT INTO listings (item_title, posttime, user_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $user_id, '$Details', $Catquery, $Start_price, $Reserve_Price, '$End_Date')";
 
-$reservequery = $query = "INSERT INTO listings (item_title, posttime, user_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $user_id, '$Details', $Catquery, $Start_price, NULL, '$End_Date')";
-
 
 
 $newposttime = date("Y.mdHis", strtotime($posttime));
@@ -84,16 +82,19 @@ elseif($Start_price <= 0){
 	echo " Start price must be greater than zero. ";
 }
 elseif(empty($Reserve_Price)){
+	$reservequery = $query = "INSERT INTO listings (item_title, posttime, user_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $user_id, '$Details', $Catquery, $Start_price, NULL, '$End_Date')";
 	$result1 = mysqli_query($connect, $reservequery);
 	}
 elseif ($Reserve_Price <= 0 or 0 <= $Reserve_Price and $Reserve_Price < $Start_price){
 	echo " Reserve price must be greater than or equal to start price. ";
 }
 
-else{
+else
+{
 $result = mysqli_query($connect,$query)
 	or die(" Error inserting auction details. ");
 }
+
 
 
 
