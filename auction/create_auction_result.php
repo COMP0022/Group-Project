@@ -80,6 +80,9 @@ elseif(empty($Title)){
 elseif(empty($Start_price)){
 	echo " Auction must have a start price. ";
 }
+elseif($Start_price <= 0){
+	echo " Start price must be greater than zero. ";
+}
 elseif(empty($Reserve_Price)){
 	$result1 = mysqli_query($connect, $reservequery);
 	}
