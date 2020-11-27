@@ -37,8 +37,6 @@ if ($accounttype == "seller"){
 
 $querybuy = "INSERT INTO users (email, password, type) VALUES ('$email', SHA('$Password'),$typevar)";
 
-
-
 $emailquery = ("SELECT * FROM users WHERE email = '$email'");
 //$emailcheck = ("SELECT type FROM users WHERE email = '$email'");
 
@@ -50,7 +48,7 @@ $emailcheck = mysqli_num_rows($emailresult)>0;
 //if $emailcheck and $emailcheckquery == $typevar
 if($emailcheck){
 	echo " Email already registered. ";
-	header('Refresh:10, url=browse.php'); //add sessions later
+	header('Refresh:3, url=browse.php'); //add sessions later
 }
 else{
 if (filter_var($email, FILTER_VALIDATE_EMAIL)){
@@ -65,11 +63,9 @@ if (filter_var($email, FILTER_VALIDATE_EMAIL)){
 	}
 	else{
 		$buyresult = mysqli_query($connect, $querybuy);
-		header('Refresh:10, url=browse.php');
+		header('Refresh:3, url=browse.php');
 	}
-	/*elseif($accounttype == "seller"){
-		$sellresult = mysqli_query($connect, $querysell);
-		header('Refresh:10, url=browse.php');}*/
+	
 
 }
 else{
@@ -97,7 +93,7 @@ if (isset($buyresult)){
 }
 else{
 	echo " Registered unsuccessfully. ";
-	header('Refresh:10; url=register.php'); //add sessions later.  
+	header('Refresh:3; url=register.php'); //add sessions later.  
 }
 
 
