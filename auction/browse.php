@@ -164,12 +164,6 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		}
 
 	}
-
-	
-	// This sets an item to finished if it is finished - but we could actually do the same with a scheduled event
-	$update_query = "UPDATE listings SET finished = 1 WHERE CURRENT_TIMESTAMP - endtime > 0";
-	$update_result = mysqli_query($connection, $update_query)
-			or die('Error updating table');
 	
 	// Here we divide $query into an array so we can remove columns and return the COUNT of listings for pagination 
 	$tmp = explode(" ",$query);
