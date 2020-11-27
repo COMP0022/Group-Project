@@ -24,24 +24,33 @@ $repeat_password = $_POST['passwordrepeat'];
 $accounttype = $_POST['accountType'];
 
 
-
-
+if ($accounttype == "buyer"){
+	$typevar = 0;
+}
+if ($accounttype == "seller"){
+	$typevar = 1;
+}
 
 
 
 //Creating insert code to insert registration into user table of testdb database
 
-$query = "INSERT INTO users (email, password) VALUES ('$email', SHA('$Password'))";
-$buyerquery = "INSERT INTO buyers (user_id) SELECT (id) FROM users WHERE email = '$email'";
-$sellerquery = "INSERT INTO sellers (user_id) SELECT (id) FROM users WHERE email = '$email'";
+$querybuy = "INSERT INTO users (email, password, type) VALUES ('$email', SHA('$Password'),$typevar)";
+
+
+
 $emailquery = ("SELECT * FROM users WHERE email = '$email'");
+//$emailcheck = ("SELECT type FROM users WHERE email = '$email'");
 
 
 $emailresult = mysqli_query($connect, $emailquery);
+//$emailcheckqeury = mysqli_query($connect, $emailcheck);
 $emailcheck = mysqli_num_rows($emailresult)>0;
+
+//if $emailcheck and $emailcheckquery == $typevar
 if($emailcheck){
 	echo " Email already registered. ";
-	header('Refresh:3, url=browse.php'); //add sessions later
+	header('Refresh:10, url=browse.php'); //add sessions later
 }
 else{
 if (filter_var($email, FILTER_VALIDATE_EMAIL)){
@@ -55,15 +64,22 @@ if (filter_var($email, FILTER_VALIDATE_EMAIL)){
 		echo " Password must not contain white spaces. ";
 	}
 	else{
-		$result = mysqli_query($connect,$query)
-		or die(" insert into database unsuccessfull ");
-		header('Refresh:3, url=browse.php'); //add sessions later.
-}
+		$buyresult = mysqli_query($connect, $querybuy);
+		header('Refresh:10, url=browse.php');
+	}
+	/*elseif($accounttype == "seller"){
+		$sellresult = mysqli_query($connect, $querysell);
+		header('Refresh:10, url=browse.php');}*/
+
 }
 else{
 	echo " Email or password is not valid. ";
 }
 }
+
+
+	
+
 /*only inserting data if the password and password repeat match, password contains not whitespaces,
 password is at least 5 characters, and email is valid/available.
 noting to user that information did not insert*/
@@ -72,30 +88,16 @@ noting to user that information did not insert*/
 
 //if user registers as buyer then insert id into buyers table...auto incrementing buyer id
 
-if (isset($result)){
-	if ($accounttype == "buyer"){
-		$buyerresult = mysqli_query($connect, $buyerquery);
-}
-
-//if user registers as seller then insert id into sellers table..auto incrementing seller id
-	if ($accounttype == "seller"){
-		$sellerresult = mysqli_query($connect, $sellerquery);
-}
-}
-
-
-
 
 
 // telling user they registered successfully and returning the email.  
 
-if (isset($result))
-{
+if (isset($buyresult)){
 	echo " Registered successfully. Registered with email: $email ";
 }
 else{
 	echo " Registered unsuccessfully. ";
-	header('Refresh:3; url=register.php'); //add sessions later.  
+	header('Refresh:10; url=register.php'); //add sessions later.  
 }
 
 
