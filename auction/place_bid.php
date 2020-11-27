@@ -12,7 +12,9 @@ if ($_SESSION['logged_in'] == true && $_SESSION['account_type']=='buyer')  // Ch
     $buyer_id = $_SESSION['buyer_id'];  
     $item_id = $_SESSION['bided_item_id'];         
     $current_price = $_SESSION['bided_current_price'];                 // retreive necessary information for placing the bid
+	$previous_top_bid = $current_price;
 
+	
     if ($bid_price<=$current_price)
     {
         echo "Invalid price entered. Place bid unsuccessful.";
