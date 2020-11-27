@@ -7,8 +7,17 @@ require 'PHPMailer/src/Exception.php';
 require 'PHPMailer/src/PHPMailer.php';
 require 'PHPMailer/src/SMTP.php';
 
-// user sessions?
 
+$seller_email_query = "SELECT item_title, email, listing_id FROM users INNER JOIN sellers ON users.id = sellers.user_id INNER JOIN listings USING(seller_id) WHERE (CURRENT_TIMESTAMP>endtime) AND notified = 0";
+$seller_email_result = mysqli_query($connection, $seller_email_query)
+		or die('Error making seller email query');
+
+?>
+
+<!-- // $winner_email_query = "SELECT item_title, max(bidprice), email FROM listings INNER JOIN bids USING(listing_id) INNER JOIN buyers USING (buyer_id) INNER JOIN users ON buyers.buyer_id = users.id WHERE (CURRENT_TIMESTAMP<endtime) AND notified = 0 GROUP BY listing_id, email"
+// $winner_result = mysqli_query($connection, $winner_email_query)
+// 		or die('Error making winner email query');
+// $winner_email = mysqli_fetch_array($winner_result);
 
 // $winner_email_query = "SELECT email FROM bids AS bi INNER JOIN buyers AS bu USING(buyer_id) INNER JOIN users AS u ON bu.user_id = u.id
 // WHERE listing_id = $item_id AND bidprice IN (SELECT MAX(bidprice) FROM bids WHERE listing_id = $item_id)";
@@ -36,8 +45,9 @@ require 'PHPMailer/src/SMTP.php';
 // $top_bid_result = mysqli_query($connection, $top_bid_query)
 // 	or die('Error making top bid query');
 //
-// $top_bid = mysqli_fetch_array($top_bid_result);
+// $top_bid = mysqli_fetch_array($top_bid_result); -->
 
+<?php
 function smtpmailer($to, $from, $from_name, $subject, $body)
     {
 
@@ -83,23 +93,34 @@ function smtpmailer($to, $from, $from_name, $subject, $body)
 
     }
 ?>
+
 <?php
+			while($row = mysqli_fetch_array($seller_email_result)){
 
-    $from = 'andrewalexfredjacob@gmail.com';
-    $name = 'Auction Bot';
-    $toSeller   = 'chengoconnell@gmail.com';
-    $subjSeller = 'Your auction has finished.';
-    $msgSeller = 'Your listing called "Charizard" has now finished.';
-    // $msgSeller = 'Your listing called '$listing_title[0]' has now finished.';
+				$from = 'andrewalexfredjacob@gmail.com';
+				$name = 'Happy Auction Bot';
+				$toSeller   = $row[1];
+				$subjSeller = 'Your auction has finished.';
+				$msgSeller = 'Your auction called "'.$row[0].'" has now finished.';
+				$error=smtpmailer($toSeller,$from,$name,$subjSeller,$msgSeller);
+				$notifyQuery = "UPDATE listings SET notified = 1 WHERE listings.listing_id = $row[2]";
+				$notifyResult = mysqli_query($connection, $notifyQuery)
+						or die('Error updating listing column');
+			}
 
-    $toBuyer   = 'chengoconnell@gmail.com';
-    $subjBuyer = 'Your auction has finished.';
-    $msgBuyer = 'Congratulations! You bid 200 pounds on the auction called "Charizard". This was the highest bid, and you have won!';
-    // $msgBuyer = 'Congratulations! You bid £$top_bid[0] on the auction called '$listing_title[0]'. This was the highest bid, and you have won!';
 
 
-    $error=smtpmailer($toSeller,$from,$name,$subjSeller,$msgSeller);
-    $error=smtpmailer($toBuyer,$from,$name,$subjBuyer,$msgBuyer);
+    // $buyer_userid = $_SESSION['buyer_id'];
+    // $toBuyer   = 'chengoconnell@gmail.com';
+    // $subjBuyer = 'Your auction has finished.';
+    // $msgBuyer = 'Congratulations! You bid 200 pounds on the auction called "Charizard". This was the highest bid, and you have won!';
+    // // $msgBuyer = 'Congratulations! You bid £$top_bid[0] on the auction called '$listing_title[0]'. This was the highest bid, and you have won!';
+
+		//
+    //
+		//
+		//
+    // $error=smtpmailer($toBuyer,$from,$name,$subjBuyer,$msgBuyer);
 
 
 ?>
