@@ -107,7 +107,12 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		}
 		else
 		{
-			 $query .= " AND category LIKE '%$category%'";
+			 $catID_query = "SELECT catID FROM categories WHERE name = '$category'";
+			 $catID_result = mysqli_query($connection, $catID_query) 
+				or die('Error making listing title query');
+			 $catID = mysqli_fetch_array($catID_result);
+			 $category = $catID[0];
+			 $query .= " AND category = '$category'";
 		}
 	}
 // Checks if 'order by' exists 
