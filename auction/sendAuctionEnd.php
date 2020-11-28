@@ -7,10 +7,44 @@ require 'PHPMailer/src/Exception.php';
 require 'PHPMailer/src/PHPMailer.php';
 require 'PHPMailer/src/SMTP.php';
 
-$buyer_email_query = "SELECT email, item_title, reserveprice, bidprice FROM bids LEFT JOIN listings ON bids.listing_id = listings.listing_id LEFT JOIN users ON bids.user_id = users.id WHERE (bidprice, bids.listing_id) IN ( SELECT MAX(bidprice) AS maxBid, listing_id FROM bids WHERE listing_id IN ( SELECT listing_id FROM listings WHERE NOW() > endtime AND DATE_ADD(endtime, INTERVAL 1 MINUTE) >= NOW()) AND bidprice >= reserveprice GROUP BY listing_id)";
+$buyer_email_query = "SELECT
+    email,
+    item_title
+FROM
+    bids
+LEFT JOIN listings ON bids.listing_id = listings.listing_id
+LEFT JOIN users ON bids.user_id = users.id
+WHERE
+    (bidprice, bids.listing_id) IN(
+    SELECT
+        MAX(bidprice),
+        listing_id
+    FROM
+        bids
+    WHERE
+        listing_id IN(
+        SELECT
+            listing_id
+        FROM
+            listings
+        WHERE
+            NOW() > endtime AND DATE_ADD(endtime, INTERVAL 1 MINUTE) >= NOW()) AND bidprice >= reserveprice
+        GROUP BY
+            listing_id)";
+
 $buyer_email_result = mysqli_query($connection, $buyer_email_query)
     or die('Error making winner email query');
-$seller_email_query = "SELECT item_title, email, listing_id FROM users INNER JOIN listings ON users.id = listings.user_id WHERE NOW() > endtime AND DATE_ADD(endtime, INTERVAL 1 MINUTE) >= NOW()";
+
+
+$seller_email_query = "SELECT
+    item_title,
+    email
+FROM
+    users
+INNER JOIN listings ON users.id = listings.user_id
+WHERE
+    NOW() > endtime AND DATE_ADD(endtime, INTERVAL 1 MINUTE) >= NOW()";
+
 $seller_email_result = mysqli_query($connection, $seller_email_query)
 		or die('Error making seller email query');
 
@@ -24,19 +58,15 @@ function smtpmailer($to, $from, $from_name, $subject, $body)
 
         /* Tells PHPMailer to use SMTP. */
         $mail->isSMTP();
-
         $mail->Mailer = "smtp";
-
         $mail->SMTPDebug  = 1;
         $mail->SMTPAuth   = TRUE;
         $mail->SMTPSecure = "tls";
-
         /* SMTP parameters. */
         $mail->Port       = 465;
         $mail->Host       = "ssl://smtp.gmail.com";
         $mail->Username   = "andrewalexfredjacob@gmail.com";
         $mail->Password   = "test1234!";
-
         $mail->IsHTML(true);
         /* Add a recipient. */
         $mail->AddAddress($to, 'User');
@@ -44,10 +74,8 @@ function smtpmailer($to, $from, $from_name, $subject, $body)
         $mail->SetFrom($from, $from_name);
         /* Set the subject. */
         $mail->Subject = $subject;
-
         /* Set the mail message body. */
         $mail->Body = $body;
-
         /* Finally send the mail. */
         if(!$mail->Send())
         {
@@ -59,7 +87,6 @@ function smtpmailer($to, $from, $from_name, $subject, $body)
             $error = "Thanks You !! Your email is sent.";
             return $error;
         }
-
     }
 ?>
 
@@ -71,7 +98,7 @@ function smtpmailer($to, $from, $from_name, $subject, $body)
 				$from = 'andrewalexfredjacob@gmail.com';
 				$name = 'Happy Auction Bot';
 				$toSeller   = $row[1];
-				$subjSeller = 'Your auction"'.$row[0].'"has finished.';
+				$subjSeller = 'Your auction" '.$row[0].' "has finished.';
 				$msgSeller = 'Your auction called "'.$row[0].'" has now ended. Be sure to check out what bids you got!';
 				$error=smtpmailer($toSeller,$from,$name,$subjSeller,$msgSeller);
 
@@ -82,8 +109,8 @@ function smtpmailer($to, $from, $from_name, $subject, $body)
         $from = 'andrewalexfredjacob@gmail.com';
         $name = 'Happy Auction Bot';
         $toBuyer   = $row[0];
-        $subjBuyer = 'Your the winner!';
-        $msgBuyer = 'Your bid of '.$row[3].' on the auction called "'.$row[1].'" has now ended... And you are the highest bidder! Congratulations!';
+        $subjBuyer = 'You are the winner!';
+        $msgBuyer = 'Your bid of on the auction called "'.$row[1].'" has now ended... And you are the highest bidder! Congratulations!';
         $error=smtpmailer($toBuyer,$from,$name,$subjBuyer,$msgBuyer);
 
       }
