@@ -7,10 +7,13 @@
 
 // For now, I will just set session variables and redirect.
 
-$input_email = $_POST['email'];
-$input_password = $_POST['password'];                           // Retreive the form input from header.php
-
 include_once 'opendb.php'; 
+$email_nocheck = htmlspecialchars(mysqli_real_escape_string($connection, $_POST['email']));
+$input_email = (filter_var($email_nocheck, FILTER_SANITIZE_EMAIL));
+$input_password = htmlspecialchars(mysqli_real_escape_string($connection, $_POST["password"]));
+
+// Retreive the form input from header.php
+
 $check_query = "SELECT * FROM users WHERE email='$input_email' AND password=SHA('$input_password');";
 $check_result = mysqli_query($connection,$check_query);
 $check = mysqli_fetch_array($check_result);                     // Make query to the database and fetch stored user information
