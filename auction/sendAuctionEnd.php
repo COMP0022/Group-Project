@@ -7,6 +7,7 @@ require 'PHPMailer/src/Exception.php';
 require 'PHPMailer/src/PHPMailer.php';
 require 'PHPMailer/src/SMTP.php';
 
+// gets buyer with the highest bid
 $buyer_email_query = "SELECT
     email,
     item_title
@@ -35,7 +36,7 @@ WHERE
 $buyer_email_result = mysqli_query($connection, $buyer_email_query)
     or die('Error making winner email query');
 
-
+// gets seller
 $seller_email_query = "SELECT
     item_title,
     email
@@ -51,6 +52,7 @@ $seller_email_result = mysqli_query($connection, $seller_email_query)
 ?>
 
 <?php
+// mailer function
 function smtpmailer($to, $from, $from_name, $subject, $body)
     {
 
@@ -65,8 +67,8 @@ function smtpmailer($to, $from, $from_name, $subject, $body)
         /* SMTP parameters. */
         $mail->Port       = 465;
         $mail->Host       = "ssl://smtp.gmail.com";
-        $mail->Username   = "andrewalexfredjacob@gmail.com";
-        $mail->Password   = "test1234!";
+        $mail->Username   = "happyauctionhouse@gmail.com";
+        $mail->Password   = "badpassword";
         $mail->IsHTML(true);
         /* Add a recipient. */
         $mail->AddAddress($to, 'User');
@@ -91,29 +93,31 @@ function smtpmailer($to, $from, $from_name, $subject, $body)
 ?>
 
 <?php
-
-
+// email seller
 			while($row = mysqli_fetch_array($seller_email_result)){
 
-				$from = 'andrewalexfredjacob@gmail.com';
-				$name = 'Happy Auction Bot';
+				$from = 'happyauctionhouse@gmail.com';
+				$name = 'Happy Auction House';
 				$toSeller   = $row[1];
 				$subjSeller = 'Your auction" '.$row[0].' "has finished.';
 				$msgSeller = 'Your auction called "'.$row[0].'" has now ended. Be sure to check out what bids you got!';
 				$error=smtpmailer($toSeller,$from,$name,$subjSeller,$msgSeller);
 
 			}
-
+// email buyer
 			while($row = mysqli_fetch_array($buyer_email_result)){
 
-        $from = 'andrewalexfredjacob@gmail.com';
-        $name = 'Happy Auction Bot';
+        $from = 'happyauctionhouse@gmail.com';
+        $name = 'Happy Auction House';
         $toBuyer   = $row[0];
         $subjBuyer = 'You are the winner!';
         $msgBuyer = 'Your bid of on the auction called "'.$row[1].'" has now ended... And you are the highest bidder! Congratulations!';
         $error=smtpmailer($toBuyer,$from,$name,$subjBuyer,$msgBuyer);
 
       }
+
+
+
 ?>
 
 
