@@ -16,13 +16,14 @@ else{
 }
 
 //defining POST variables
+//email validity check
 $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
 
 $Password = $_POST['password'];
 $repeat_password = $_POST['passwordrepeat'];
 $accounttype = $_POST['accountType'];
 
-
+//variable is initiated depending on if user signs up as buyer of seller
 if ($accounttype == "buyer"){
 	$typevar = 0;
 }
@@ -36,18 +37,20 @@ if ($accounttype == "seller"){
 
 $query = "INSERT INTO users (email, password, type) VALUES ('$email', SHA('$Password'),$typevar)";
 
+//cheking all where email already exists
 $emailquery = ("SELECT * FROM users WHERE email = '$email'");
-//$emailcheck = ("SELECT type FROM users WHERE email = '$email'");
+
 
 
 $emailresult = mysqli_query($connect, $emailquery);
-//$emailcheckqeury = mysqli_query($connect, $emailcheck);
+
+//checking if email is in more than zero rows already
 $emailcheck = mysqli_num_rows($emailresult)>0;
 
-//if $emailcheck and $emailcheckquery == $typevar
+//testing many inputs for registration
 if($emailcheck){
 	echo " Email already registered. ";
-	header('Refresh:3, url=browse.php'); //add sessions later
+	header('Refresh:3, url=browse.php'); 
 }
 else{
 if (filter_var($email, FILTER_VALIDATE_EMAIL)){
@@ -79,9 +82,6 @@ else{
 password is at least 5 characters, and email is valid/available.
 noting to user that information did not insert*/
 
-
-
-//if user registers as buyer then insert id into buyers table...auto incrementing buyer id
 
 
 
