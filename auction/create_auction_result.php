@@ -28,8 +28,8 @@ else{
 
 			//THIS CHECK CAN BE COMPLETED SIMULTANIOUSLY WITH #3. Check after insert statement
   
-$Title = $_POST['auctionTitle'];
-$Details = $_POST['auctionDetails'];
+$Title = mysqli_real_escape_string($connect, $_POST['auctionTitle']);
+$Details = mysqli_real_escape_string($connect, $_POST['auctionDetails']);
 $Category = $_POST['auctionCategory'];
 $Start_price = $_POST['auctionStartPrice'];
 $Reserve_Price = $_POST['auctionReservePrice'];
