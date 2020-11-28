@@ -27,8 +27,7 @@ else{
             issue, give some semi-helpful feedback to user. */
 
 			//THIS CHECK CAN BE COMPLETED SIMULTANIOUSLY WITH #3. Check after insert statement
-
-//still need to add posttime to html and var below but just testing this out for now.  
+  
 $Title = $_POST['auctionTitle'];
 $Details = $_POST['auctionDetails'];
 $Category = $_POST['auctionCategory'];
@@ -41,7 +40,7 @@ $current = date('Y-m-d H:i', time());
 $posttime = $current;
 
 
-//session--login seller id inserted into listings table
+//session--login user id inserted into listings table
 $user_id = $_SESSION['user_id'];
  
 
@@ -104,7 +103,7 @@ if ($result or $result1){
 	echo('<div class="text-center">Auction successfully created! <a href="mylistings.php">View your new listing.</a></div>');
 }
 else{
-	echo "Make sure to check data types and try again"; //just a filler return statement for now while testing
+	echo "Make sure to check data types and try again"; 
 }
 
 
