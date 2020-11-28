@@ -49,9 +49,7 @@ $user_id = $_SESSION['user_id'];
 /* TODO #3: If everything looks good, make the appropriate call to insert
             data into the database. */
 
-			/*we can either delete the "posttime" attribute from our database
-			or I can add an html script in create_auction.php
-			*/
+			
 $Catquery = "(SELECT catID FROM categories WHERE name = '$Category')";
 
 $query = "INSERT INTO listings (item_title, posttime, user_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $user_id, '$Details', $Catquery, $Start_price, $Reserve_Price, '$End_Date')";
