@@ -17,12 +17,12 @@ else{
 
 //defining POST variables
 //email validity check
-$email1 = mysqli_real_escape_string($connect, $_POST['email']);
+$email1 = htmlspecialchars(mysqli_real_escape_string($connect, $_POST['email']));
 //$email = (filter_var($_POST['email'], FILTER_SANITIZE_EMAIL));
 
 $email = (filter_var($email1, FILTER_SANITIZE_EMAIL));
 
-$Password = mysqli_real_escape_string($connect, $_POST['password']);
+$Password = htmlspecialchars(mysqli_real_escape_string($connect, $_POST['password']));
 $repeat_password = $_POST['passwordrepeat'];
 $accounttype = $_POST['accountType'];
 
