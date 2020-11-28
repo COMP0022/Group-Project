@@ -35,7 +35,7 @@ if ($accounttype == "seller"){
 
 //Creating insert code to insert registration into user table of testdb database
 
-$querybuy = "INSERT INTO users (email, password, type) VALUES ('$email', SHA('$Password'),$typevar)";
+$query = "INSERT INTO users (email, password, type) VALUES ('$email', SHA('$Password'),$typevar)";
 
 $emailquery = ("SELECT * FROM users WHERE email = '$email'");
 //$emailcheck = ("SELECT type FROM users WHERE email = '$email'");
@@ -62,7 +62,7 @@ if (filter_var($email, FILTER_VALIDATE_EMAIL)){
 		echo " Password must not contain white spaces. ";
 	}
 	else{
-		$buyresult = mysqli_query($connect, $querybuy);
+		$result = mysqli_query($connect, $query);
 		header('Refresh:3, url=browse.php');
 	}
 	
@@ -88,7 +88,7 @@ noting to user that information did not insert*/
 
 // telling user they registered successfully and returning the email.  
 
-if (isset($buyresult)){
+if (isset($result)){
 	echo " Registered successfully. Registered with email: $email ";
 }
 else{
