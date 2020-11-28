@@ -65,7 +65,7 @@ if (empty($End_Date)){
 }
 
 elseif($newenddate <= $newposttime){
-	echo " Auction end time must be later than current time. ";
+	echo " Auction end datetime must be later than current datetime. ";
 }
 elseif ($newenddate > ($newposttime + 1)){
 	echo " Cannot create auction more than a year in advance. ";
