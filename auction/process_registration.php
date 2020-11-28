@@ -17,9 +17,12 @@ else{
 
 //defining POST variables
 //email validity check
-$email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+$email1 = mysqli_real_escape_string($connect, $_POST['email']);
+//$email = (filter_var($_POST['email'], FILTER_SANITIZE_EMAIL));
 
-$Password = $_POST['password'];
+$email = (filter_var($email1, FILTER_SANITIZE_EMAIL));
+
+$Password = mysqli_real_escape_string($connect, $_POST['password']);
 $repeat_password = $_POST['passwordrepeat'];
 $accounttype = $_POST['accountType'];
 
@@ -75,8 +78,6 @@ else{
 }
 }
 
-
-	
 
 /*only inserting data if the password and password repeat match, password contains not whitespaces,
 password is at least 5 characters, and email is valid/available.
