@@ -1,19 +1,17 @@
+<?php include_once("header.php")?>
+<?php require("utilities.php")?>
 <?php
 
 // TODO: Extract $_POST variables, check they're OK, and attempt to make a bid.
 // Notify user of success/failure and redirect/give navigation options.
-
-session_start();
-
-if ($_SESSION['logged_in'] == true && $_SESSION['account_type']=='buyer')  // Check if the user has loggin in as a buyer
+include_once 'opendb.php'; 
+if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true && $_SESSION['account_type']=='buyer')  // Check if the user has loggin in as a buyer
 {
 	$user_id = $_SESSION['user_id'];
-    $bid_price = $_POST['bid'];
-    $buyer_id = $_SESSION['buyer_id'];  
+    $bid_price = htmlspecialchars(mysqli_real_escape_string($connection, $_POST['bid']));
     $item_id = $_SESSION['bided_item_id'];         
     $current_price = $_SESSION['bided_current_price'];                 // retreive necessary information for placing the bid
-	$previous_top_bid = $current_price;
-
+    $previous_top_bid = $current_price;
 	
     if ($bid_price<=$current_price)
     {
@@ -26,9 +24,7 @@ if ($_SESSION['logged_in'] == true && $_SESSION['account_type']=='buyer')  // Ch
         date_default_timezone_set("Europe/London");
         $bid_time = date("Y-m-d H:i:s");                               // get the time of placing bid (in London timezone)
 
-
-        include_once 'opendb.php'; 
-        $bid_query = "INSERT INTO bids (buyer_id, listing_id, bidtime, bidprice) VALUES ($buyer_id, $item_id, '$bid_time', $bid_price)";
+        $bid_query = "INSERT INTO bids (user_id, listing_id, bidtime, bidprice) VALUES ($user_id, $item_id, '$bid_time', $bid_price)";
         $bid_result = mysqli_query($connection,$bid_query) or die(" Insert into database unsuccessfull.");
                                                                     // insert the bid information to database
         if($bid_result)

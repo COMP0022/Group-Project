@@ -27,10 +27,9 @@ else{
             issue, give some semi-helpful feedback to user. */
 
 			//THIS CHECK CAN BE COMPLETED SIMULTANIOUSLY WITH #3. Check after insert statement
-
-//still need to add posttime to html and var below but just testing this out for now.  
-$Title = $_POST['auctionTitle'];
-$Details = $_POST['auctionDetails'];
+  
+$Title = htmlspecialchars(mysqli_real_escape_string($connect, $_POST['auctionTitle']));
+$Details = htmlspecialchars(mysqli_real_escape_string($connect, $_POST['auctionDetails']));
 $Category = $_POST['auctionCategory'];
 $Start_price = $_POST['auctionStartPrice'];
 $Reserve_Price = $_POST['auctionReservePrice'];
@@ -41,22 +40,18 @@ $current = date('Y-m-d H:i', time());
 $posttime = $current;
 
 
-//session--login seller id inserted into listings table
-$seller_ID = $_SESSION['seller_id'];
+//session--login user id inserted into listings table
+$user_id = $_SESSION['user_id'];
  
 
 
 /* TODO #3: If everything looks good, make the appropriate call to insert
             data into the database. */
 
-			/*we can either delete the "posttime" attribute from our database
-			or I can add an html script in create_auction.php
-			*/
+			
 $Catquery = "(SELECT catID FROM categories WHERE name = '$Category')";
 
-$query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $seller_ID, '$Details', $Catquery, $Start_price, $Reserve_Price, '$End_Date')";
-
-$reservequery = $query = "INSERT INTO listings (item_title, posttime, seller_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $seller_ID, '$Details', $Catquery, $Start_price, NULL, '$End_Date')";
+$query = "INSERT INTO listings (item_title, posttime, user_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $user_id, '$Details', $Catquery, $Start_price, $Reserve_Price, '$End_Date')";
 
 
 
@@ -69,7 +64,7 @@ if (empty($End_Date)){
 }
 
 elseif($newenddate <= $newposttime){
-	echo " Auction end time must be later than current time. ";
+	echo " Auction end datetime must be later than current datetime. ";
 }
 elseif ($newenddate > ($newposttime + 1)){
 	echo " Cannot create auction more than a year in advance. ";
@@ -84,16 +79,19 @@ elseif($Start_price <= 0){
 	echo " Start price must be greater than zero. ";
 }
 elseif(empty($Reserve_Price)){
+	$reservequery = $query = "INSERT INTO listings (item_title, posttime, user_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $user_id, '$Details', $Catquery, $Start_price, NULL, '$End_Date')";
 	$result1 = mysqli_query($connect, $reservequery);
 	}
 elseif ($Reserve_Price <= 0 or 0 <= $Reserve_Price and $Reserve_Price < $Start_price){
 	echo " Reserve price must be greater than or equal to start price. ";
 }
 
-else{
+else
+{
 $result = mysqli_query($connect,$query)
 	or die(" Error inserting auction details. ");
 }
+
 
 
 
@@ -105,7 +103,7 @@ if ($result or $result1){
 	echo('<div class="text-center">Auction successfully created! <a href="mylistings.php">View your new listing.</a></div>');
 }
 else{
-	echo "Make sure to check data types and try again"; //just a filler return statement for now while testing
+	echo "Make sure to check data types and try again"; 
 }
 
 
