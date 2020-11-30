@@ -16,7 +16,7 @@ if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer')
 
 	$watchlist_listing_query = "SELECT * FROM listings WHERE listings.listing_id IN (SELECT listing_id FROM watchlist WHERE user_id = $user_id) LIMIT $results_per_page";
 
-	$num_watchlist_query = "SELECT COUNT(*) FROM listings WHERE listings.listing_id IN (SELECT listing_id FROM watchlist WHERE user_id = $user_id)";
+	$num_watchlist_query = "SELECT COUNT(listing_id) FROM watchlist WHERE user_id = $user_id";
 
 	$num_watchlist_result = mysqli_query($connection, $num_watchlist_query)
 			or die('Error making watchlist count query');
@@ -95,6 +95,8 @@ if ($row[0]  < 1) {
 		}
 
 	}
+	mysqli_close($connection);
+
 
 ?>
 
