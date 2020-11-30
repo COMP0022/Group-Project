@@ -48,9 +48,6 @@
 
   $_SESSION['bided_current_price'] = $current_price; // Add the viewed item's current price into session info.
 
-	// TODO: Note: Auctions that have ended may pull a different set of data,
-	//			 like whether the auction ended in a sale or was cancelled due
-	//			 to lack of high-enough bids. Or maybe not.
 
 	// Calculate time to auction end:
 	$now = new DateTime();
@@ -81,7 +78,7 @@
 		$has_session = false;
 		$watching = false;
 	}
-
+mysqli_close($connection);
 
 
 ?>
