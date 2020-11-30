@@ -5,68 +5,69 @@
 
 	// Get info from the URL:
   $item_id = $_GET['item_id'];
-  $listing_query = "SELECT * FROM listings WHERE listing_id = '$item_id'";
-  
+  $listing_query = "SELECT endtime, itemdescription, item_title, listing_id FROM listings WHERE listing_id = '$item_id'";
+
   $_SESSION['bided_item_id'] = $item_id; // Add the viewed item id into session info.
-  
+
 	//Use item_id to make a query to the database.
 	include 'opendb.php';
 	$result = mysqli_query($connection, $listing_query)
 	or die('Error making select users query');
-	
+
 	$row = mysqli_fetch_array($result);
-	
-	//Checks count of bids
+
 	$count_bid_query = "SELECT COUNT(*) FROM bids WHERE listing_id = {$row['listing_id']}";
-		
+
 		$count_bid_result = mysqli_query($connection, $count_bid_query)
 			or die('Error making top bid query');
-		
+
 		$bid_count = mysqli_fetch_array($count_bid_result);
-	
-	//setting up variables for printing
-	$title = $row[5];
-	$description = $row[4];
+
+	$title = $row[2];
+	$description = $row[1];
 	$num_bids = $bid_count[0];
-	$end_time = date_create($row[3]);
-	
-	
-	if ($num_bids == 0) //if there are no bids 
-	{	
+	$end_time = date_create($row[0]);
+
+
+	if ($num_bids == 0)
+	{
 		$current_price = $row['startprice'];
 	}
 
-	 else // otherwise
+	 else
 	{
 		$top_bid_query = "SELECT MAX(bidprice) FROM bids WHERE listing_id = '$item_id'";
-		
+
 		$top_bid_result = mysqli_query($connection, $top_bid_query)
-			or die('Error making top bid query');	
-		
+			or die('Error making top bid query');
+
 		$top_bid = mysqli_fetch_array($top_bid_result);
-		
+
 		$current_price = $top_bid[0];
 	}
-  
+
   $_SESSION['bided_current_price'] = $current_price; // Add the viewed item's current price into session info.
 
-	
+	// TODO: Note: Auctions that have ended may pull a different set of data,
+	//			 like whether the auction ended in a sale or was cancelled due
+	//			 to lack of high-enough bids. Or maybe not.
+
 	// Calculate time to auction end:
 	$now = new DateTime();
-	
+
 	if ($now < $end_time) {
 		$time_to_end = date_diff($now, $end_time);
 		$time_remaining = ' (in ' . display_time_remaining($time_to_end) . ')';
 	}
-	
-	if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true) 
+
+	if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] == true)
 	{
 		$has_session = true;
 		$user_id = $_SESSION['user_id'];
 		$watch_check_query = "SELECT * FROM watchlist WHERE user_id = $user_id AND listing_id = $item_id";
 		$watch_check_result = mysqli_query($connection, $watch_check_query)
-			or die('Error making watch check query');	
-		
+			or die('Error making watch check query');
+
 		$watch_bool = mysqli_fetch_array($watch_check_result);
 		if ($watch_bool == "") {
 			$watching = false;
@@ -75,13 +76,13 @@
 			$watching = true;
 		}
 	}
-	else 
+	else
 	{
 		$has_session = false;
 		$watching = false;
 	}
-	
-	mysqli_close($connection);
+
+
 
 ?>
 
@@ -123,8 +124,9 @@
     <p>
 <?php if ($now > $end_time): ?>
      This auction ended <?php echo(date_format($end_time, 'j M H:i')) ?>
+     <!-- TODO: Print the result of the auction here? -->
 <?php else: ?>
-     Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
+     Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>
     <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
 
     <!-- Bidding form -->
@@ -139,7 +141,7 @@
     </form>
 <?php endif ?>
 
-  
+
   </div> <!-- End of right col with bidding info -->
 
 </div> <!-- End of row #2 -->
@@ -149,7 +151,7 @@
 <?php include_once("footer.php")?>
 
 
-<script> 
+<script>
 // JavaScript functions: addToWatchlist and removeFromWatchlist.
 
 
@@ -161,8 +163,8 @@ function addToWatchlist(button) {
   $.ajax('watchlist_funcs.php', {
     type: "POST",
     data: {functionname: 'add_to_watchlist', arguments: [<?php echo($item_id);?>]},
-	
-    success: 
+
+    success:
       function (obj, textstatus) {
         // Callback function for when call is successful and returns obj
         console.log("Success");
@@ -194,12 +196,12 @@ function removeFromWatchlist(button) {
     type: "POST",
     data: {functionname: 'remove_from_watchlist', arguments: [<?php echo($item_id);?>]},
 
-    success: 
+    success:
       function (obj, textstatus) {
         // Callback function for when call is successful and returns obj
         console.log("Success");
         var objT = obj.trim();
- 
+
         if (objT == "success") {
           $("#watch_watching").hide();
           $("#watch_nowatch").show();
