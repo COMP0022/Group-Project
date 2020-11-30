@@ -1,4 +1,12 @@
+<?php include 'opendb.php'?>
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require 'PHPMailer/src/Exception.php';
+require 'PHPMailer/src/PHPMailer.php';
+require 'PHPMailer/src/SMTP.php';
+
 
 //Get the emails of people who are watching an item
 $watchlist_email_query = "SELECT email FROM users WHERE id IN(SELECT user_id FROM watchlist WHERE listing_id = $item_id)";
@@ -25,14 +33,54 @@ $outbid_result = mysqli_query($connection, $outbid_query)
 $outbid_email = mysqli_fetch_array($outbid_result);
 
 
-$name = "Happy Auction House"; //sender’s name
-$email = "happyauctionhouse@gmail.com"; //sender’s e mail address
-$recipient = "$outbid_email[0]"; //recipient
-$mail_body = "Your bid of £$previous_top_bid on the auction called '$listing_title[0]' as been outbid. The current highest bid is now £$bid_price"; //mail body
-$subject = "Outbid notification"; //subject
-$header = "From: ". $name ." <" . $email .">\r\n"; //optional headerfields
+function smtpmailer($to, $from, $from_name, $subject, $body)
+    {
 
-mail($recipient, $subject,$mail_body ,$header); //mail function
+        $mail = new PHPMailer();
+
+        /* Tells PHPMailer to use SMTP. */
+        $mail->isSMTP();
+        $mail->Mailer = "smtp";
+        $mail->SMTPDebug  = false;
+        $mail->SMTPAuth   = TRUE;
+        $mail->SMTPSecure = "tls";
+        /* SMTP parameters. */
+        $mail->Port       = 465;
+        $mail->Host       = "ssl://smtp.gmail.com";
+        $mail->Username   = "happyauctionhouse@gmail.com";
+        $mail->Password   = "badpassword";
+        $mail->IsHTML(true);
+        /* Add a recipient. */
+        $mail->AddAddress($to, 'User');
+        /* Set the mail sender. */
+        $mail->SetFrom($from, $from_name);
+        /* Set the subject. */
+        $mail->Subject = $subject;
+        /* Set the mail message body. */
+        $mail->Body = $body;
+        /* Finally send the mail. */
+        if(!$mail->Send())
+        {
+            $error ="Email failed to send.";
+            return $error;
+        }
+        else
+        {
+            $error = "Thank You !! Your email is sent.";
+            return $error;
+        }
+    }
+
+?>
+
+<?php
+
+$name = "Happy Auction House"; //sender’s name
+$from = "happyauctionhouse@gmail.com"; //sender’s e mail address
+$recipient = "$outbid_email[0]"; //recipient
+$mail_body = "Your bid of £$previous_top_bid on the auction called '$listing_title[0]' has been outbid. The current highest bid is now £$bid_price"; //mail body
+$subject = "Outbid notification"; //subject
+$error = smtpmailer($recipient,$from,$name,$subject,$mail_body); //mail function
 
 
 while ($row = mysqli_fetch_array($watchlist_result))
@@ -41,31 +89,23 @@ while ($row = mysqli_fetch_array($watchlist_result))
 		continue;
 	}
 
-
 	if ($row[0] == $buyer_email[0]) {
 		$name = "Happy Auction House"; //sender’s name
-		$email = "happyauctionhouse@gmail.com"; //sender’s e mail address
+		$from = "happyauctionhouse@gmail.com"; //sender’s e mail address
 		$recipient = "$buyer_email[0]"; //recipient
 		$mail_body = "This is an email confirming that you have bid £$bid_price on the auction called '$listing_title[0]'"; //mail body
 		$subject = "Bid confirmation"; //subject
-		$header = "From: ". $name ." <" . $email .">\r\n"; //optional headerfields
-
-		mail($recipient, $subject,$mail_body ,$header); //mail function
+		$error = smtpmailer($recipient,$from,$name,$subject,$mail_body); //mail function
 	}
 	else {
 		$name = "Happy Auction House"; //sender’s name
-		$email = "happyauctionhouse@gmail.com"; //sender’s e mail address
+		$from = "happyauctionhouse@gmail.com"; //sender’s e mail address
 		$recipient = "$row[0]"; //recipient
 		$mail_body = "The auction called '$listing_title[0]' which you are watching just received a bid for £$bid_price "; //mail body
 		$subject = "Auction you are watching"; //subject
-		$header = "From: ". $name ." <" . $email .">\r\n"; //optional headerfields
-
-		mail($recipient, $subject,$mail_body ,$header); //mail function
+		$error = smtpmailer($recipient,$from,$name,$subject,$mail_body); //mail function
 	}
 }
-
-
-
 
 
 ?>
