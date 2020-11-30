@@ -5,8 +5,7 @@
 <?php
 // This function takes the form data and adds the new auction to the database.
 
-/* TODO #1: Connect to MySQL database (perhaps by requiring a file that
-            already does this). */
+//Connect to MySQL database 
 $servername = "localhost";
 $username = "COMP0022";
 $password = "test";
@@ -20,13 +19,7 @@ else{
 	echo "Connection failed.";
 }
 
-/* TODO #2: Extract form data into variables. Because the form was a 'post'
-            form, its data can be accessed via $POST['auctionTitle'], 
-            $POST['auctionDetails'], etc. Perform checking on the data to
-            make sure it can be inserted into the database. If there is an
-            issue, give some semi-helpful feedback to user. */
-
-			//THIS CHECK CAN BE COMPLETED SIMULTANIOUSLY WITH #3. Check after insert statement
+//defining POST variables from html form input
   
 $Title = htmlspecialchars(mysqli_real_escape_string($connect, $_POST['auctionTitle']));
 $Details = htmlspecialchars(mysqli_real_escape_string($connect, $_POST['auctionDetails']));
@@ -34,6 +27,8 @@ $Category = $_POST['auctionCategory'];
 $Start_price = $_POST['auctionStartPrice'];
 $Reserve_Price = $_POST['auctionReservePrice'];
 $End_Date = $_POST['auctionEndDate'];
+
+//setting the default time zone for input to london timezone.
 
 date_default_timezone_set('Europe/London');
 $current = date('Y-m-d H:i', time());
@@ -45,19 +40,22 @@ $user_id = $_SESSION['user_id'];
  
 
 
-/* TODO #3: If everything looks good, make the appropriate call to insert
-            data into the database. */
 
-			
+//creating queries to insert input from form into database
+//obtaining catid from categories			
 $Catquery = "(SELECT catID FROM categories WHERE name = '$Category')";
 
+//inserting a new listing
 $query = "INSERT INTO listings (item_title, posttime, user_id, itemdescription, category, startprice, reserveprice, endtime) VALUES ('$Title', '$posttime', $user_id, '$Details', $Catquery, $Start_price, $Reserve_Price, '$End_Date')";
 
 
-
+//formating posttime and enddate so that comparison can be done
 $newposttime = date("Y.mdHis", strtotime($posttime));
 
 $newenddate = date("Y.mdHis", strtotime($End_Date));
+
+/*inserting into listings depending on these statements such as 
+enddate check, required fields, etc */
 
 if (empty($End_Date)){
 	echo " Auction must have an end date. ";
