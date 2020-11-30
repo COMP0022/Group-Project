@@ -75,20 +75,36 @@ function smtpmailer($to, $from, $from_name, $subject, $body)
 
 <?php
 
-$name = "Happy Auction House"; //sender’s name
-$from = "happyauctionhouse@gmail.com"; //sender’s e mail address
-$recipient = "$outbid_email[0]"; //recipient
-$mail_body = "Your bid of £$previous_top_bid on the auction called '$listing_title[0]' has been outbid. The current highest bid is now £$bid_price"; //mail body
-$subject = "Outbid notification"; //subject
-$error = smtpmailer($recipient,$from,$name,$subject,$mail_body); //mail function
+$buyer_notified = 0;
 
+if ($buyer_email[0] == $outbid_email[0]) {
+	$name = "Happy Auction House"; //sender’s name
+	$from = "happyauctionhouse@gmail.com"; //sender’s e mail address
+	$recipient = "$buyer_email[0]"; //recipient
+	$mail_body = "This is an email confirming that you have bid £$bid_price on the auction called '$listing_title[0]'"; //mail body
+	$subject = "Bid confirmation"; //subject
+	$error = smtpmailer($recipient,$from,$name,$subject,$mail_body); //mail function
+	$buyer_notified = 1; 
+}
+else {
+	$name = "Happy Auction House"; //sender’s name
+	$from = "happyauctionhouse@gmail.com"; //sender’s e mail address
+	$recipient = "$outbid_email[0]"; //recipient
+	$mail_body = "Your bid of £$previous_top_bid on the auction called '$listing_title[0]' has been outbid. The current highest bid is now £$bid_price"; //mail body
+	$subject = "Outbid notification"; //subject
+	$error = smtpmailer($recipient,$from,$name,$subject,$mail_body); //mail function
+}
 
 while ($row = mysqli_fetch_array($watchlist_result))
 {
 	if ($row[0] == $outbid_email[0]) {
 		continue;
 	}
-
+	
+	if (($row[0] == $buyer_email[0]) and ($buyer_notified == 1)) {
+		continue;
+	}
+	
 	if ($row[0] == $buyer_email[0]) {
 		$name = "Happy Auction House"; //sender’s name
 		$from = "happyauctionhouse@gmail.com"; //sender’s e mail address
