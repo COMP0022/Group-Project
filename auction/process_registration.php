@@ -17,11 +17,13 @@ else{
 
 //defining POST variables
 //email validity check
+//injection protection
 $email1 = htmlspecialchars(mysqli_real_escape_string($connect, $_POST['email']));
-//$email = (filter_var($_POST['email'], FILTER_SANITIZE_EMAIL));
+
 
 $email = (filter_var($email1, FILTER_SANITIZE_EMAIL));
 
+//defining variables from html input form
 $Password = htmlspecialchars(mysqli_real_escape_string($connect, $_POST['password']));
 $repeat_password = $_POST['passwordrepeat'];
 $accounttype = $_POST['accountType'];
@@ -50,7 +52,9 @@ $emailresult = mysqli_query($connect, $emailquery);
 //checking if email is in more than zero rows already
 $emailcheck = mysqli_num_rows($emailresult)>0;
 
-//testing many inputs for registration
+/*testing many inputs for registration
+such as password length, password match, and whitespces */
+
 if($emailcheck){
 	echo " Email already registered. ";
 	header('Refresh:3, url=browse.php'); 
