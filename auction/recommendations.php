@@ -6,29 +6,16 @@
 <h2 class="my-3">Recommendations for you</h2>
 
 <?php
-  // This page is for showing a buyer recommended items based on their bid
-  // history. It will be pretty similar to browse.php, except there is no
-  // search bar. This can be started after browse.php is working with a database.
-  // Feel free to extract out useful functions from browse.php and put them in
-  // the shared "utilities.php" where they can be shared by multiple files.
-
-
-  // TODO: Check user's credentials (cookie/session).
-
-  // TODO: Perform a query to pull up auctions they might be interested in.
-
-  // TODO: Loop through results and print them out as list items.
-
-?>
-<?php
-
+//Sets results per page, can modify as you like
 $results_per_page = 5;
 
+//Checks to see if a buyer is logged in
 if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer')
 {
 	$user_id = $_SESSION['user_id'];
 }
 
+//Query takes live bids that users with similar bidding history have bid on 
 	$recco_listing_query = "SELECT * FROM listings WHERE (CURRENT_TIMESTAMP<endtime) AND listing_id IN(
 								SELECT DISTINCT listing_id FROM bids WHERE user_id IN(
 									SELECT user_id FROM bids WHERE listing_id IN(
@@ -36,6 +23,7 @@ if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer')
 									AND user_id != $user_id)
 							AND listing_id NOT IN(SELECT listing_id FROM bids WHERE user_id = $user_id)) LIMIT $results_per_page";
 
+//Counts the number of these bids for pagination 
 	$num_recco_query = "SELECT COUNT(*) FROM listings WHERE (CURRENT_TIMESTAMP<endtime) AND listing_id IN(
 								SELECT DISTINCT listing_id FROM bids WHERE user_id IN(
 									SELECT user_id FROM bids WHERE listing_id IN(
@@ -78,6 +66,7 @@ if (isset($_SESSION['account_type']) && $_SESSION['account_type'] == 'buyer')
 <div class="container mt-5">
 
 <?php
+//Helpful message for when there are no reccos
 if ($row[0]  < 1) {
 		echo ("Sorry, either you have not made any bids, or other users who have a similar bid history have not bid on anything you have not bid on. <br><br>
 
@@ -122,6 +111,7 @@ if ($row[0]  < 1) {
 		}
 
 	}
+	mysqli_close($connection);
 
 ?>
 

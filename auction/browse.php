@@ -76,17 +76,19 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 
 	else
 	{
-		// Sets keyword Variable
+		// Sets keyword Variable - prevents injection attack
 		$keyword = htmlspecialchars(mysqli_real_escape_string($connection,$_GET['keyword']));
 		
 		// Checks if Keyword is blank
 		if ($keyword == '')
 		{
+			 // If blank set query to any item title 
 			 $query = "SELECT listings.listing_id, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title IS NOT NULL";
 		}
 		else
 		{
+			 // Otherwise check if item title is like keyword searched 
 			 $query = "SELECT listings.listing_id, listings.item_title, listings.itemdescription, MAX(bids.bidprice), listings.startprice, listings.endtime
 FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_title LIKE '%$keyword%'";
 		}
@@ -107,6 +109,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 		}
 		else
 		{
+			// Converts string to catID which is used in DB
 			 $catID_query = "SELECT catID FROM categories WHERE name = '$category'";
 			 $catID_result = mysqli_query($connection, $catID_query) 
 				or die('Error making listing title query');
@@ -120,6 +123,8 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 	{
 		// At this point we divide our SQL queries into two. $query will be used to count the number of listings for pagination
 		// $query_ordered will be used to pull the actual listings in the correct order. $query_ordered is what is outputted to screen later
+		
+		//Default search is for soonest expiry. Pushes finished auctions to the back by increasing the absolute value of the time difference
 		$query_ordered = $query . " GROUP BY listings.listing_id ORDER BY (CASE 
 			WHEN (listings.endtime > CURRENT_TIMESTAMP) THEN TIMEDIFF(listings.endtime,CURRENT_TIMESTAMP) 
 			ELSE ADDTIME((TIMEDIFF(CURRENT_TIMESTAMP, listings.endtime)),\"10000:0:0\") 
@@ -249,6 +254,7 @@ if ($num_results < 1) {
 		}
 	
 	}
+	mysqli_close($connection);
 
 ?>
 

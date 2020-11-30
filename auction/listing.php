@@ -16,6 +16,7 @@
 	
 	$row = mysqli_fetch_array($result);
 	
+	//Checks count of bids
 	$count_bid_query = "SELECT COUNT(*) FROM bids WHERE listing_id = {$row['listing_id']}";
 		
 		$count_bid_result = mysqli_query($connection, $count_bid_query)
@@ -23,18 +24,19 @@
 		
 		$bid_count = mysqli_fetch_array($count_bid_result);
 	
+	//setting up variables for printing
 	$title = $row[5];
 	$description = $row[4];
 	$num_bids = $bid_count[0];
 	$end_time = date_create($row[3]);
 	
 	
-	if ($num_bids == 0) 
+	if ($num_bids == 0) //if there are no bids 
 	{	
 		$current_price = $row['startprice'];
 	}
 
-	 else 
+	 else // otherwise
 	{
 		$top_bid_query = "SELECT MAX(bidprice) FROM bids WHERE listing_id = '$item_id'";
 		
@@ -48,9 +50,6 @@
   
   $_SESSION['bided_current_price'] = $current_price; // Add the viewed item's current price into session info.
 
-	// TODO: Note: Auctions that have ended may pull a different set of data,
-	//			 like whether the auction ended in a sale or was cancelled due
-	//			 to lack of high-enough bids. Or maybe not.
 	
 	// Calculate time to auction end:
 	$now = new DateTime();
@@ -82,7 +81,7 @@
 		$watching = false;
 	}
 	
-
+	mysqli_close($connection);
 
 ?>
 
@@ -124,7 +123,6 @@
     <p>
 <?php if ($now > $end_time): ?>
      This auction ended <?php echo(date_format($end_time, 'j M H:i')) ?>
-     <!-- TODO: Print the result of the auction here? -->
 <?php else: ?>
      Auction ends <?php echo(date_format($end_time, 'j M H:i') . $time_remaining) ?></p>  
     <p class="lead">Current bid: £<?php echo(number_format($current_price, 2)) ?></p>
