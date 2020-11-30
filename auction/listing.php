@@ -5,7 +5,7 @@
 
 	// Get info from the URL:
   $item_id = $_GET['item_id'];
-  $listing_query = "SELECT endtime, itemdescription, item_title, listing_id FROM listings WHERE listing_id = '$item_id'";
+  $listing_query = "SELECT endtime, itemdescription, item_title, listing_id, startprice FROM listings WHERE listing_id = '$item_id'";
 
   $_SESSION['bided_item_id'] = $item_id; // Add the viewed item id into session info.
 
