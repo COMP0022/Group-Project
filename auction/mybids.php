@@ -82,7 +82,7 @@ FROM listings LEFT JOIN bids ON listings.listing_id=bids.listing_id WHERE item_t
 else
 {
   // Sets keyword Variable
-  $keyword = $_GET['keyword'];
+  $keyword = htmlspecialchars(mysqli_real_escape_string($connection,$_GET['keyword']));
 
   // Checks if Keyword is blank
   if ($keyword == '')
@@ -256,6 +256,8 @@ if ($num_results < 1) {
 		}
 
 	}
+
+  mysqli_close($connection);
 
 ?>
 
